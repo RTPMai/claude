@@ -126,7 +126,7 @@ tr:hover td{background:#F9FAFB}
 
 <script>
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const GQL = `query{invoices(first:25){nodes{id visualId orderedAt totalPrice amountOutstanding createdAt status{name}contact{fullName}}}quotes(first:25){nodes{id visualId createdAt totalPrice status{name}contact{fullName}}}}`;
+const GQL = `query{invoices(first:25){nodes{id visualId createdAt total amountOutstanding status{name}contact{fullName}}}quotes(first:25){nodes{id visualId createdAt total status{name}contact{fullName}}}}`;
 let goals = Array(12).fill(260000);
 let lastData = null;
 
@@ -170,16 +170,16 @@ function render(raw){
   const quo = (raw.quotes&&raw.quotes.nodes)||[];
 
   const ytdInv = inv.filter(i=>new Date(i.createdAt)>=ys);
-  const ytdSales = ytdInv.reduce((s,i)=>s+(parseFloat(i.totalPrice)||0),0);
+  const ytdSales = ytdInv.reduce((s,i)=>s+(parseFloat(i.total)||0),0);
   const outstanding = inv.reduce((s,i)=>s+(parseFloat(i.amountOutstanding)||0),0);
   const open = inv.filter(i=>!["paid","cancelled"].some(x=>(i.status&&i.status.name||"").toLowerCase().includes(x)));
   // Filter out blank/ignore status records
   const validQuo = quo.filter(q => q.status && q.status.name && !q.status.name.toLowerCase().includes("ignore") && !q.status.name.toLowerCase().includes("blank"));
   const qWeek = validQuo.filter(q=>new Date(q.createdAt)>=ws);
   const monthly = Array(12).fill(0);
-  ytdInv.forEach(i=>{const m=new Date(i.createdAt).getMonth();monthly[m]+=(parseFloat(i.totalPrice)||0);});
+  ytdInv.forEach(i=>{const m=new Date(i.createdAt).getMonth();monthly[m]+=(parseFloat(i.total)||0);});
   const umap={};
-  ytdInv.forEach(i=>{const n=(i.contact&&i.contact.fullName)||"Unassigned";umap[n]=(umap[n]||0)+(parseFloat(i.totalPrice)||0);});
+  ytdInv.forEach(i=>{const n=(i.contact&&i.contact.fullName)||"Unassigned";umap[n]=(umap[n]||0)+(parseFloat(i.total)||0);});
   const byUser=Object.entries(umap).sort((a,b)=>b[1]-a[1]).slice(0,8);
   const conv=validQuo.length>0?Math.min(100,(inv.length/(inv.length+validQuo.length))*100):0;
   const cm=now.getMonth();
@@ -219,7 +219,7 @@ function render(raw){
   document.getElementById("quotes-table").innerHTML=validQuo.slice(0,8).map(q=>`<tr>
     <td style="color:#6B7280">${q.visualId||""}</td>
     <td>${(q.contact&&q.contact.fullName)||"—"}</td>
-    <td style="text-align:right">${fmt(q.totalPrice)}</td>
+    <td style="text-align:right">${fmt(q.total)}</td>
     <td><span class="pill ${pillClass(q.status&&q.status.name)}">${(q.status&&q.status.name)||"Quote"}</span></td>
   </tr>`).join("");
 
@@ -229,7 +229,7 @@ function render(raw){
     <td style="max-width:160px">${(o.contact&&o.contact.fullName)||"—"}</td>
     <td>${(o.contact&&o.contact.fullName)||"—"}</td>
     <td style="color:#6B7280;white-space:nowrap">${new Date(o.createdAt).toLocaleDateString()}</td>
-    <td style="text-align:right;font-weight:600">${fmt(o.totalPrice)}</td>
+    <td style="text-align:right;font-weight:600">${fmt(o.total)}</td>
     <td style="text-align:right;color:${parseFloat(o.amountOutstanding)>0?"#DC2626":"#3D9A5C"}">${fmt(o.amountOutstanding)}</td>
     <td><span class="pill ${pillClass(o.status&&o.status.name)}">${(o.status&&o.status.name)||"—"}</span></td>
   </tr>`).join("");
@@ -254,3 +254,4 @@ loadData();
 </script>
 </body>
 </html>
+<!-- field discovery note: using minimal safe fields only -->
