@@ -165,7 +165,8 @@ function pillClass(s){
 // Fetch a single page of invoices
 async function fetchPage(type, cursor) {
   const afterClause = cursor ? `,after:"${cursor}"` : "";
-  const query = `query{${type}(first:25,sortOn:VISUAL_ID,direction:DESC${afterClause}){nodes{id visualId createdAt total amountOutstanding status{name}contact{fullName}}pageInfo{hasNextPage endCursor}}}`;
+  const sortClause = type === "invoices" ? ",sortOn:VISUAL_ID,direction:DESC" : ",sortOn:VISUAL_ID";
+  const query = `query{${type}(first:25${sortClause}${afterClause}){nodes{id visualId createdAt total amountOutstanding status{name}contact{fullName}}pageInfo{hasNextPage endCursor}}}`;
   const res = await fetch("/api/printavo",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
