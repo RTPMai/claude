@@ -3,17 +3,21 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Printavo Reports</title>
+<title>Printavo Reports — P&M Apparel</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{background:#F4F6F8;color:#111827;font-family:'Inter',sans-serif;font-size:14px}
-.hdr{background:#fff;border-bottom:1px solid #E5E7EB;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:56px}
+.hdr{background:#fff;border-bottom:1px solid #E5E7EB;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:10}
 .logo{display:flex;align-items:center;gap:10px}
 .logomark{width:32px;height:32px;background:#3D9A5C;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:15px;flex-shrink:0}
 .hdr-title{font-size:15px;font-weight:700}
 .hdr-sub{font-size:12px;color:#6B7280}
+.hdr-right{display:flex;align-items:center;gap:12px}
 .rbtn{background:#3D9A5C;border:none;color:#fff;padding:7px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600}
+.rbtn:hover{background:#2F7A48}
+.rbtn:disabled{opacity:.5;cursor:not-allowed}
+.last-updated{font-size:11px;color:#9CA3AF}
 .dash{padding:28px 32px}
 .dash h2{font-size:22px;font-weight:700}
 .dash-sub{font-size:13px;color:#6B7280;margin-top:2px;margin-bottom:24px}
@@ -36,7 +40,7 @@ tr:hover td{background:#F9FAFB}
 .pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600}
 .pp{background:#FEF3C7;color:#D97706}.pa{background:#EAF5EE;color:#3D9A5C}
 .pi{background:#FEE2E2;color:#DC2626}.pq{background:#F3F4F6;color:#6B7280}.pr{background:#EFF6FF;color:#2563EB}
-.bars{display:flex;align-items:flex-end;gap:6px;height:130px;margin-top:8px}
+.bars{display:flex;align-items:flex-end;gap:6px;height:140px;margin-top:8px}
 .bc{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%}
 .bw{flex:1;width:100%;display:flex;align-items:flex-end;gap:2px}
 .bar{border-radius:3px 3px 0 0;width:100%;min-height:2px}
@@ -48,13 +52,19 @@ tr:hover td{background:#F9FAFB}
 .goals{display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;margin-bottom:18px}
 .gc{display:flex;flex-direction:column;align-items:center;gap:3px}
 .gc label{font-size:10px;color:#6B7280}
-.gc input{background:#F4F6F8;border:1px solid #E5E7EB;border-radius:5px;padding:5px 6px;color:#111827;font-size:12px;width:68px;outline:none;text-align:center}
+.gc input{background:#F4F6F8;border:1px solid #E5E7EB;border-radius:5px;padding:5px 6px;color:#111827;font-size:12px;width:72px;outline:none;text-align:center}
 .gc input:focus{border-color:#3D9A5C}
 .err{background:#FEE2E2;border:1px solid #FECACA;border-radius:8px;padding:14px 18px;color:#DC2626;margin-bottom:18px}
-.spin-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:80px 32px}
-.spinner{width:28px;height:28px;border:3px solid #E5E7EB;border-top-color:#3D9A5C;border-radius:50%;animation:spin .7s linear infinite}
+.spin-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:80px 32px}
+.spinner{width:32px;height:32px;border:3px solid #E5E7EB;border-top-color:#3D9A5C;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+.progress-bar-wrap{width:280px;height:6px;background:#E5E7EB;border-radius:99px;overflow:hidden}
+.progress-bar{height:100%;background:#3D9A5C;border-radius:99px;transition:width .3s ease}
+.progress-label{font-size:12px;color:#6B7280;text-align:center}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.fetch-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:#6B7280;background:#F3F4F6;padding:3px 8px;border-radius:99px}
+.fetch-dot{width:6px;height:6px;border-radius:50%;background:#3D9A5C}
+.fetch-dot.spinning{animation:spin .7s linear infinite;border:2px solid #E5E7EB;border-top-color:#3D9A5C;background:none}
 @media(max-width:700px){.two{grid-template-columns:1fr}.dash{padding:16px}.hdr{padding:0 16px}}
 </style>
 </head>
@@ -65,20 +75,29 @@ tr:hover td{background:#F9FAFB}
     <div class="logomark">P</div>
     <div>
       <div class="hdr-title">Printavo Reports</div>
-      <div class="hdr-sub" id="shop-name"></div>
+      <div class="hdr-sub">P&amp;M Apparel</div>
     </div>
   </div>
-  <button class="rbtn" id="refresh-btn" style="display:none" onclick="loadData()">Refresh</button>
+  <div class="hdr-right">
+    <div class="last-updated" id="last-updated"></div>
+    <div class="fetch-badge" id="fetch-badge" style="display:none">
+      <div class="fetch-dot spinning" id="fetch-dot"></div>
+      <span id="fetch-label">Loading...</span>
+    </div>
+    <button class="rbtn" id="refresh-btn" onclick="startLoad()" disabled>Refresh</button>
+  </div>
 </div>
 
 <div id="loading" class="spin-wrap">
   <div class="spinner"></div>
-  <div style="font-size:13px;color:#6B7280">Loading your Printavo data...</div>
+  <div style="font-size:14px;font-weight:600;color:#111827">Loading your Printavo data</div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:5%"></div></div>
+  <div class="progress-label" id="progress-label">Fetching records...</div>
 </div>
 
 <div id="error-wrap" style="display:none" class="dash">
   <div class="err" id="error-msg"></div>
-  <button class="rbtn" onclick="loadData()">Retry</button>
+  <button class="rbtn" onclick="startLoad()">Retry</button>
 </div>
 
 <div id="dashboard" style="display:none" class="dash">
@@ -100,25 +119,25 @@ tr:hover td{background:#F9FAFB}
 
   <div class="two">
     <div class="card">
-      <div class="card-hd"><h3>YTD Sales by Contact</h3><span>Top 8</span></div>
+      <div class="card-hd"><h3>YTD Sales by Contact</h3><span>Top 10</span></div>
       <div class="card-bd" style="padding:12px 20px">
         <table><thead><tr><th>Contact</th><th style="text-align:right">Sales</th></tr></thead>
         <tbody id="user-table"></tbody></table>
       </div>
     </div>
     <div class="card">
-      <div class="card-hd"><h3>Recent Quotes</h3><span>Last 8</span></div>
+      <div class="card-hd"><h3>Recent Quotes</h3><span>Last 10</span></div>
       <div class="card-bd" style="padding:12px 20px">
-        <table><thead><tr><th>#</th><th>Name</th><th style="text-align:right">Total</th><th>Status</th></tr></thead>
+        <table><thead><tr><th>#</th><th>Contact</th><th style="text-align:right">Total</th><th>Status</th></tr></thead>
         <tbody id="quotes-table"></tbody></table>
       </div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-hd"><h3>Recent Orders</h3><span>Last 10</span></div>
+    <div class="card-hd"><h3>Recent Orders</h3><span id="orders-count"></span></div>
     <div class="card-bd" style="padding:12px 20px;overflow-x:auto">
-      <table><thead><tr><th>#</th><th>Order Name</th><th>Contact</th><th>Created</th><th style="text-align:right">Total</th><th style="text-align:right">Outstanding</th><th>Status</th></tr></thead>
+      <table><thead><tr><th>#</th><th>Contact</th><th>Created</th><th style="text-align:right">Total</th><th style="text-align:right">Outstanding</th><th>Status</th></tr></thead>
       <tbody id="orders-table"></tbody></table>
     </div>
   </div>
@@ -126,132 +145,220 @@ tr:hover td{background:#F9FAFB}
 
 <script>
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const GQL = `query{invoices(first:25){nodes{id visualId createdAt total amountOutstanding status{name}contact{fullName}}}quotes(first:25){nodes{id visualId createdAt total status{name}contact{fullName}}}}`;
-let goals = Array(12).fill(260000);
-let lastData = null;
+const CACHE_KEY = "printavo_cache_v2";
+const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes
+let goals = JSON.parse(localStorage.getItem("printavo_goals") || "null") || Array(12).fill(260000);
+let isLoading = false;
 
-const fmt = n => new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}).format(n||0);
+const fmt  = n => new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}).format(n||0);
 const fmtN = n => new Intl.NumberFormat("en-US").format(n||0);
 
 function pillClass(s){
   const l=(s||"").toLowerCase();
-  if(l.includes("approved")||l.includes("paid")) return "pa";
+  if(l.includes("approved")||l.includes("paid")||l.includes("complete")) return "pa";
   if(l.includes("invoice")) return "pi";
   if(l.includes("quote")) return "pq";
-  if(l.includes("production")||l.includes("progress")) return "pr";
+  if(l.includes("production")||l.includes("progress")||l.includes("shipped")||l.includes("pickup")) return "pr";
   return "pp";
 }
 
-async function loadData(){
-  show("loading"); hide("dashboard"); hide("error-wrap");
+// Fetch a single page of invoices
+async function fetchPage(type, cursor) {
+  const afterClause = cursor ? `,after:"${cursor}"` : "";
+  const query = `query{${type}(first:25,sortOn:VISUAL_ID,direction:DESC${afterClause}){nodes{id visualId createdAt total amountOutstanding status{name}contact{fullName}}pageInfo{hasNextPage endCursor}}}`;
+  const res = await fetch("/api/printavo",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({query})
+  });
+  if(!res.ok) throw new Error("Proxy returned "+res.status);
+  const json = await res.json();
+  if(json.errors) throw new Error(json.errors.map(e=>e.message).join(", "));
+  return json.data[type];
+}
+
+// Fetch ALL pages for a type
+async function fetchAll(type, onProgress) {
+  const allNodes = [];
+  let cursor = null;
+  let page = 0;
+  do {
+    page++;
+    onProgress(page, allNodes.length);
+    const result = await fetchPage(type, cursor);
+    allNodes.push(...result.nodes);
+    cursor = result.pageInfo.hasNextPage ? result.pageInfo.endCursor : null;
+    // Small delay to respect rate limits (10 req/5sec)
+    if(cursor) await new Promise(r => setTimeout(r, 600));
+  } while(cursor);
+  return allNodes;
+}
+
+async function startLoad() {
+  if(isLoading) return;
+  isLoading = true;
+
+  // Show cached data immediately if available
+  const cached = localStorage.getItem(CACHE_KEY);
+  if(cached) {
+    try {
+      const {invoices, quotes, timestamp} = JSON.parse(cached);
+      render(invoices, quotes);
+      show("dashboard"); hide("loading"); hide("error-wrap");
+      document.getElementById("last-updated").textContent = "Cached · " + new Date(timestamp).toLocaleTimeString();
+      // Show background refresh badge
+      document.getElementById("fetch-badge").style.display = "";
+      document.getElementById("fetch-label").textContent = "Refreshing...";
+      document.getElementById("refresh-btn").disabled = true;
+    } catch(e) {}
+  } else {
+    show("loading"); hide("dashboard"); hide("error-wrap");
+  }
+
   try {
-    const res = await fetch("/api/printavo",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({query:GQL})
-    });
-    if(!res.ok) throw new Error("Proxy returned "+res.status);
-    const json = await res.json();
-    if(json.errors) throw new Error(json.errors.map(e=>e.message).join(", "));
-    if(!json.data) throw new Error("No data returned from Printavo");
-    lastData = json.data;
-    render(lastData);
+    let invoiceCount = 0, quoteCount = 0;
+
+    const updateProgress = (type, page, count) => {
+      const label = `Fetching ${type}: ${count} records (page ${page})...`;
+      document.getElementById("progress-label").textContent = label;
+      document.getElementById("fetch-label").textContent = label;
+      const pct = Math.min(90, 5 + page * 8);
+      const bar = document.getElementById("progress-bar");
+      if(bar) bar.style.width = pct + "%";
+    };
+
+    const [invoices, quotes] = await Promise.all([
+      fetchAll("invoices", (p,c) => { invoiceCount=c; updateProgress("invoices", p, c); }),
+      fetchAll("quotes",   (p,c) => { quoteCount=c;   updateProgress("quotes", p, c); })
+    ]);
+
+    // Cache results
+    localStorage.setItem(CACHE_KEY, JSON.stringify({invoices, quotes, timestamp: Date.now()}));
+    document.getElementById("last-updated").textContent = "Updated " + new Date().toLocaleTimeString();
+
+    render(invoices, quotes);
+    show("dashboard"); hide("loading"); hide("error-wrap");
+
   } catch(e) {
-    document.getElementById("error-msg").textContent = e.message;
-    show("error-wrap"); hide("loading");
+    if(!document.getElementById("dashboard").style.display || document.getElementById("dashboard").style.display === "none") {
+      document.getElementById("error-msg").textContent = e.message;
+      show("error-wrap"); hide("loading");
+    } else {
+      document.getElementById("last-updated").textContent = "Refresh failed — " + e.message.slice(0,40);
+    }
+  } finally {
+    isLoading = false;
+    document.getElementById("fetch-badge").style.display = "none";
+    document.getElementById("refresh-btn").disabled = false;
+    // Schedule next auto-refresh
+    setTimeout(startLoad, REFRESH_INTERVAL);
   }
 }
 
-function render(raw){
+function render(invoices, quotes) {
   const now = new Date();
-  const ys = new Date(now.getFullYear(),0,1);
-  const ws = new Date(now); ws.setDate(now.getDate()-now.getDay());
-  const inv = (raw.invoices&&raw.invoices.nodes)||[];
-  const quo = (raw.quotes&&raw.quotes.nodes)||[];
+  const ys = new Date(now.getFullYear(), 0, 1);
+  const ws = new Date(now); ws.setDate(now.getDate() - now.getDay());
+  const cm = now.getMonth();
 
-  const ytdInv = inv.filter(i=>new Date(i.createdAt)>=ys);
-  const ytdSales = ytdInv.reduce((s,i)=>s+(parseFloat(i.total)||0),0);
-  const outstanding = inv.reduce((s,i)=>s+(parseFloat(i.amountOutstanding)||0),0);
-  const open = inv.filter(i=>!["paid","cancelled"].some(x=>(i.status&&i.status.name||"").toLowerCase().includes(x)));
-  // Filter out blank/ignore status records
-  const validQuo = quo.filter(q => q.status && q.status.name && !q.status.name.toLowerCase().includes("ignore") && !q.status.name.toLowerCase().includes("blank"));
-  const qWeek = validQuo.filter(q=>new Date(q.createdAt)>=ws);
+  // Filter valid quotes (exclude blank/ignore)
+  const validQuotes = quotes.filter(q => {
+    const s = (q.status && q.status.name || "").toLowerCase();
+    return !s.includes("ignore") && !s.includes("blank") && s !== "";
+  });
+
+  const ytdInv = invoices.filter(i => new Date(i.createdAt) >= ys);
+  const ytdSales = ytdInv.reduce((s,i) => s + (parseFloat(i.total)||0), 0);
+  const outstanding = invoices.reduce((s,i) => s + (parseFloat(i.amountOutstanding)||0), 0);
+  const openOrders = invoices.filter(i => !["paid","cancelled","complete"].some(x => (i.status&&i.status.name||"").toLowerCase().includes(x)));
+  const qWeek = validQuotes.filter(q => new Date(q.createdAt) >= ws);
+
   const monthly = Array(12).fill(0);
-  ytdInv.forEach(i=>{const m=new Date(i.createdAt).getMonth();monthly[m]+=(parseFloat(i.total)||0);});
-  const umap={};
-  ytdInv.forEach(i=>{const n=(i.contact&&i.contact.fullName)||"Unassigned";umap[n]=(umap[n]||0)+(parseFloat(i.total)||0);});
-  const byUser=Object.entries(umap).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  const conv=validQuo.length>0?Math.min(100,(inv.length/(inv.length+validQuo.length))*100):0;
-  const cm=now.getMonth();
-  const cmSales=monthly[cm], cmGoal=goals[cm];
-  const pct=cmGoal>0?Math.min(100,(cmSales/cmGoal)*100).toFixed(0):0;
+  ytdInv.forEach(i => { const m = new Date(i.createdAt).getMonth(); monthly[m] += (parseFloat(i.total)||0); });
 
-  document.getElementById("shop-name").textContent="P&M Apparel";
-  document.getElementById("chart-year").textContent=now.getFullYear();
-  document.getElementById("refresh-btn").style.display="";
+  const umap = {};
+  ytdInv.forEach(i => { const n = (i.contact&&i.contact.fullName)||"Unassigned"; umap[n] = (umap[n]||0) + (parseFloat(i.total)||0); });
+  const byUser = Object.entries(umap).sort((a,b) => b[1]-a[1]).slice(0,10);
+
+  const conv = validQuotes.length > 0 ? Math.min(100, (invoices.length/(invoices.length+validQuotes.length))*100) : 0;
+  const cmSales = monthly[cm], cmGoal = goals[cm];
+  const pct = cmGoal > 0 ? Math.min(100,(cmSales/cmGoal)*100).toFixed(0) : 0;
+
+  document.getElementById("chart-year").textContent = now.getFullYear();
+  document.getElementById("orders-count").textContent = `${fmtN(invoices.length)} total`;
 
   // KPIs
-  document.getElementById("kpis").innerHTML=`
+  document.getElementById("kpis").innerHTML = `
     <div class="kpi"><div><div class="kpi-lbl">YTD Sales</div><div class="kpi-val" style="color:#3D9A5C">${fmt(ytdSales)}</div><div class="kpi-s">${now.getFullYear()} year to date</div></div><div class="kpi-ico ig">💰</div></div>
     <div class="kpi"><div><div class="kpi-lbl">Outstanding Invoices</div><div class="kpi-val" style="color:#DC2626">${fmt(outstanding)}</div><div class="kpi-s">Unpaid balance</div></div><div class="kpi-ico ir">📄</div></div>
-    <div class="kpi"><div><div class="kpi-lbl">Open Orders</div><div class="kpi-val">${fmtN(open.length)}</div><div class="kpi-s">Active orders</div></div><div class="kpi-ico ia">📦</div></div>
-    <div class="kpi"><div><div class="kpi-lbl">Quotes This Week</div><div class="kpi-val">${fmtN(qWeek.length)}</div><div class="kpi-s">${fmtN(validQuo.length)} total on record</div></div><div class="kpi-ico ib">📝</div></div>
+    <div class="kpi"><div><div class="kpi-lbl">Open Orders</div><div class="kpi-val">${fmtN(openOrders.length)}</div><div class="kpi-s">of ${fmtN(invoices.length)} total</div></div><div class="kpi-ico ia">📦</div></div>
+    <div class="kpi"><div><div class="kpi-lbl">Quotes This Week</div><div class="kpi-val">${fmtN(qWeek.length)}</div><div class="kpi-s">${fmtN(validQuotes.length)} total on record</div></div><div class="kpi-ico ib">📝</div></div>
     <div class="kpi"><div><div class="kpi-lbl">Conversion Rate</div><div class="kpi-val">${conv.toFixed(1)}%</div><div class="kpi-s">Quotes to orders</div></div><div class="kpi-ico ig">📈</div></div>
     <div class="kpi"><div><div class="kpi-lbl">This Month vs Goal</div><div class="kpi-val" style="color:${cmSales>=cmGoal?"#3D9A5C":"#D97706"}">${fmt(cmSales)}</div><div class="kpi-s">Goal: ${fmt(cmGoal)} — ${pct}% attained</div></div><div class="kpi-ico ia">🎯</div></div>
   `;
 
   // Goals row
   const gr = document.getElementById("goals-row");
-  gr.innerHTML='<span style="font-size:12px;color:#6B7280;align-self:center">Monthly goals ($):</span>';
-  MONTHS.forEach((m,i)=>{
-    const d=document.createElement("div"); d.className="gc";
-    d.innerHTML=`<label>${m}</label><input type="number" value="${goals[i]}" data-idx="${i}"/>`;
-    d.querySelector("input").addEventListener("change",e=>{goals[parseInt(e.target.dataset.idx)]=parseFloat(e.target.value)||0;renderChart(monthly,cm);});
+  gr.innerHTML = '<span style="font-size:12px;color:#6B7280;align-self:center;white-space:nowrap">Monthly goals ($):</span>';
+  MONTHS.forEach((m,i) => {
+    const d = document.createElement("div"); d.className = "gc";
+    d.innerHTML = `<label>${m}</label><input type="number" value="${goals[i]}" data-idx="${i}"/>`;
+    d.querySelector("input").addEventListener("change", e => {
+      goals[parseInt(e.target.dataset.idx)] = parseFloat(e.target.value)||0;
+      localStorage.setItem("printavo_goals", JSON.stringify(goals));
+      renderChart(monthly, cm);
+      // Re-render KPIs with new goal
+      render(invoices, quotes);
+    });
     gr.appendChild(d);
   });
 
-  renderChart(monthly,cm);
+  renderChart(monthly, cm);
 
   // Sales by user
-  document.getElementById("user-table").innerHTML=byUser.map(([n,a])=>`<tr><td>${n}</td><td style="text-align:right;font-weight:600;color:#3D9A5C">${fmt(a)}</td></tr>`).join("");
+  document.getElementById("user-table").innerHTML = byUser.length
+    ? byUser.map(([n,a]) => `<tr><td>${n}</td><td style="text-align:right;font-weight:600;color:#3D9A5C">${fmt(a)}</td></tr>`).join("")
+    : `<tr><td colspan="2" style="color:#9CA3AF;text-align:center;padding:20px">No YTD sales data</td></tr>`;
 
-  // Quotes
-  document.getElementById("quotes-table").innerHTML=validQuo.slice(0,8).map(q=>`<tr>
-    <td style="color:#6B7280">${q.visualId||""}</td>
-    <td>${(q.contact&&q.contact.fullName)||"—"}</td>
-    <td style="text-align:right">${fmt(q.total)}</td>
-    <td><span class="pill ${pillClass(q.status&&q.status.name)}">${(q.status&&q.status.name)||"Quote"}</span></td>
-  </tr>`).join("");
+  // Recent quotes
+  const recentQ = validQuotes.slice(0,10);
+  document.getElementById("quotes-table").innerHTML = recentQ.length
+    ? recentQ.map(q => `<tr>
+        <td style="color:#6B7280">${q.visualId||""}</td>
+        <td>${(q.contact&&q.contact.fullName)||"—"}</td>
+        <td style="text-align:right">${fmt(q.total)}</td>
+        <td><span class="pill ${pillClass(q.status&&q.status.name)}">${(q.status&&q.status.name)||"—"}</span></td>
+      </tr>`).join("")
+    : `<tr><td colspan="4" style="color:#9CA3AF;text-align:center;padding:20px">No quotes found</td></tr>`;
 
-  // Orders
-  document.getElementById("orders-table").innerHTML=inv.slice(0,10).map(o=>`<tr>
+  // Recent orders
+  document.getElementById("orders-table").innerHTML = invoices.slice(0,20).map(o => `<tr>
     <td style="color:#6B7280">${o.visualId||""}</td>
-    <td style="max-width:160px">${(o.contact&&o.contact.fullName)||"—"}</td>
     <td>${(o.contact&&o.contact.fullName)||"—"}</td>
     <td style="color:#6B7280;white-space:nowrap">${new Date(o.createdAt).toLocaleDateString()}</td>
     <td style="text-align:right;font-weight:600">${fmt(o.total)}</td>
     <td style="text-align:right;color:${parseFloat(o.amountOutstanding)>0?"#DC2626":"#3D9A5C"}">${fmt(o.amountOutstanding)}</td>
     <td><span class="pill ${pillClass(o.status&&o.status.name)}">${(o.status&&o.status.name)||"—"}</span></td>
   </tr>`).join("");
-
-  hide("loading"); show("dashboard");
 }
 
-function renderChart(monthly, cm){
-  const max=Math.max(...monthly,...goals,1);
-  const bc=document.getElementById("bar-chart");
-  bc.innerHTML=MONTHS.slice(0,cm+1).map((m,i)=>{
-    const ah=Math.round((monthly[i]/max)*110);
-    const gh=Math.round((goals[i]/max)*110);
-    return`<div class="bc"><div class="bw"><div class="bar bg" style="height:${gh}px" title="Goal: ${fmt(goals[i])}"></div><div class="bar ba" style="height:${ah}px" title="Actual: ${fmt(monthly[i])}"></div></div><div class="bl">${m}</div></div>`;
+function renderChart(monthly, cm) {
+  const max = Math.max(...monthly, ...goals, 1);
+  document.getElementById("bar-chart").innerHTML = MONTHS.slice(0, cm+1).map((m,i) => {
+    const ah = Math.round((monthly[i]/max)*120);
+    const gh = Math.round((goals[i]/max)*120);
+    return `<div class="bc"><div class="bw">
+      <div class="bar bg" style="height:${gh}px" title="Goal: ${fmt(goals[i])}"></div>
+      <div class="bar ba" style="height:${ah}px" title="Actual: ${fmt(monthly[i])}"></div>
+    </div><div class="bl">${m}</div></div>`;
   }).join("");
 }
 
 function show(id){document.getElementById(id).style.display="";}
 function hide(id){document.getElementById(id).style.display="none";}
 
-loadData();
+// Kick off
+startLoad();
 </script>
 </body>
 </html>
-<!-- field discovery note: using minimal safe fields only -->
