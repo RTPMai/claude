@@ -1,36 +1,48 @@
-// Minimal Vercel-style serverless proxy for Printavo.
-// NOTE: Edit authorization or sensitive headers as needed.
+export const config = {
+  runtime: 'nodejs20.x',
+};
+
 export default async function handler(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === "OPTIONS") return res.status(200).end();
+
+  const token = process.env.PRINTAVO_API_TOKEN;
+  if (!token) {
+    return res.status(500).json({ error: "PRINTAVO_API_TOKEN not set in environment variables" });
+  }
+
+  // For GET requests (browser test), return a status check
+  if (req.method === "GET") {
+    return res.status(200).json({ status: "ok", message: "Printavo proxy is running. Token is set." });
+  }
+
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  let body;
   try {
-    const targetBase = 'https://api.printavo.com';
-    // req.url in serverless often includes the leading path (e.g., /api/endpoint)
-    const path = (req.url || '').replace(/^\//, '');
-    const url = new URL(path, targetBase);
+    body = typeof req.body === "string" ? req.body : JSON.stringify(req.body);
+  } catch {
+    return res.status(400).json({ error: "Invalid request body" });
+  }
 
-    // Forward method, headers, and body (except some hop-by-hop headers)
-    const headers = { ...req.headers };
-    delete headers.host;
-    delete headers['content-length'];
+  try {
+    const printavoRes = await fetch("https://www.printavo.com/api/v2", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body,
+    });
 
-    const init = {
-      method: req.method,
-      headers,
-      // In Node/Vercel, req has a readable body — use fetch's body passthrough when present
-      body: ['GET', 'HEAD'].includes(req.method) ? undefined : req.body,
-    };
-
-    const resp = await fetch(url.toString(), init);
-    const respBody = await resp.arrayBuffer();
-
-    // Copy response headers
-    for (const [k, v] of resp.headers.entries()) {
-      if (k.toLowerCase() === 'transfer-encoding') continue;
-      res.setHeader(k, v);
-    }
-
-    res.status(resp.status).send(Buffer.from(respBody));
+    const data = await printavoRes.json();
+    return res.status(printavoRes.status).json(data);
   } catch (err) {
-    console.error('Proxy error:', err);
-    res.status(500).json({ error: 'Proxy error', detail: String(err) });
+    return res.status(500).json({ error: "Proxy error", detail: err.message });
   }
 }
