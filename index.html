@@ -82,6 +82,7 @@ body{background:#F4F6F8;color:#111827;font-family:'Inter',sans-serif}
 <body>
 <div id="root"></div>
 <script type="text/babel">
+const { useState, useCallback, useEffect } = React;
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const fmt  = n => new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}).format(n??0);
 const fmtN = n => new Intl.NumberFormat("en-US").format(n??0);
@@ -148,19 +149,19 @@ function Chart({monthly,goals,cm}){
 }
 
 function App(){
-  const [loading,setLoading]=React.useState(false);
-  const [err,setErr]=React.useState("");
-  const [data,setData]=React.useState(null);
-  const [goals,setGoals]=React.useState(Array(12).fill(25000));
+  const [loading,setLoading]=useState(false);
+  const [err,setErr]=useState("");
+  const [data,setData]=useState(null);
+  const [goals,setGoals]=useState(Array(12).fill(25000));
 
-  const load=React.useCallback(async()=>{
+  const load=useCallback(async()=>{
     setLoading(true);setErr("");
     try{const raw=await loadPrintavo();setData(process(raw,goals));}
     catch(e){setErr(e.message);}
     finally{setLoading(false);}
   },[goals]);
 
-  React.useEffect(()=>{load();},[]);
+  useEffect(()=>{load();},[]);
 
   function setGoal(i,v){setGoals(g=>{const n=[...g];n[i]=parseFloat(v)||0;return n;});}
   const pct=data&&data.cmGoal>0?Math.min(100,(data.cmSales/data.cmGoal)*100).toFixed(0):0;
