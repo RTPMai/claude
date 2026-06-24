@@ -10,7 +10,7 @@
 body{background:#F4F6F8;color:#111827;font-family:'Inter',sans-serif;font-size:14px}
 .hdr{background:#fff;border-bottom:1px solid #E5E7EB;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:10}
 .logo{display:flex;align-items:center;gap:10px}
-.logomark{width:32px;height:32px;background:#3D9A5C;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:15px;flex-shrink:0}
+.logomark{width:32px;height:32px;background:#3D9A5C;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:15px}
 .hdr-title{font-size:15px;font-weight:700}
 .hdr-sub{font-size:12px;color:#6B7280}
 .hdr-right{display:flex;align-items:center;gap:12px}
@@ -40,29 +40,35 @@ tr:hover td{background:#F9FAFB}
 .pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600}
 .pp{background:#FEF3C7;color:#D97706}.pa{background:#EAF5EE;color:#3D9A5C}
 .pi{background:#FEE2E2;color:#DC2626}.pq{background:#F3F4F6;color:#6B7280}.pr{background:#EFF6FF;color:#2563EB}
-.bars{display:flex;align-items:flex-end;gap:6px;height:140px;margin-top:8px}
-.bc{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%}
-.bw{flex:1;width:100%;display:flex;align-items:flex-end;gap:2px}
-.bar{border-radius:3px 3px 0 0;width:100%;min-height:2px}
-.ba{background:#3D9A5C}.bg{background:#E5E7EB}
-.bl{font-size:10px;color:#6B7280;white-space:nowrap}
-.leg{display:flex;gap:16px;margin-top:12px}
-.li{display:flex;align-items:center;gap:6px;font-size:12px;color:#6B7280}
-.ld{width:10px;height:10px;border-radius:2px}
-.goals{display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;margin-bottom:18px}
-.gc{display:flex;flex-direction:column;align-items:center;gap:3px}
-.gc label{font-size:10px;color:#6B7280}
-.gc input{background:#F4F6F8;border:1px solid #E5E7EB;border-radius:5px;padding:5px 6px;color:#111827;font-size:12px;width:72px;outline:none;text-align:center}
-.gc input:focus{border-color:#3D9A5C}
-.err{background:#FEE2E2;border:1px solid #FECACA;border-radius:8px;padding:14px 18px;color:#DC2626;margin-bottom:18px}
+
+/* Month progress bars */
+.month-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+.month-card{display:flex;flex-direction:column;gap:6px}
+.month-label{font-size:12px;font-weight:600;color:#374151}
+.month-vals{display:flex;justify-content:space-between;font-size:11px;color:#6B7280}
+.month-track{height:10px;background:#F3F4F6;border-radius:99px;overflow:hidden;position:relative}
+.month-fill{height:100%;border-radius:99px;transition:width .6s ease}
+.month-pct{font-size:11px;font-weight:600}
+.month-cur{font-size:12px;font-weight:600;color:#111827}
+
+/* Ring chart for current month */
+.ring-wrap{display:flex;align-items:center;gap:32px;padding:8px 0}
+.ring-svg{flex-shrink:0}
+.ring-info{display:flex;flex-direction:column;gap:8px}
+.ring-val{font-size:32px;font-weight:700;letter-spacing:-1px}
+.ring-goal{font-size:13px;color:#6B7280}
+.ring-pct{font-size:14px;font-weight:600}
+
 .spin-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:80px 32px}
 .spinner{width:32px;height:32px;border:3px solid #E5E7EB;border-top-color:#3D9A5C;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .progress-bar-wrap{width:280px;height:6px;background:#E5E7EB;border-radius:99px;overflow:hidden}
 .progress-bar{height:100%;background:#3D9A5C;border-radius:99px;transition:width .3s ease}
 .progress-label{font-size:12px;color:#6B7280;text-align:center}
+.err{background:#FEE2E2;border:1px solid #FECACA;border-radius:8px;padding:14px 18px;color:#DC2626;margin-bottom:18px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-@media(max-width:700px){.two{grid-template-columns:1fr}.dash{padding:16px}.hdr{padding:0 16px}}
+@media(max-width:900px){.month-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.two{grid-template-columns:1fr}.dash{padding:16px}.hdr{padding:0 16px}.month-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
@@ -89,19 +95,28 @@ tr:hover td{background:#F9FAFB}
 </div>
 <div id="dashboard" style="display:none" class="dash">
   <h2>Dashboard</h2>
-  <div class="dash-sub">Your shop performance overview</div>
+  <div class="dash-sub" id="dash-sub">Your shop performance overview</div>
   <div class="kpis" id="kpis"></div>
-  <div class="card">
-    <div class="card-hd"><h3>Sales by Month vs Goal</h3><span id="chart-year"></span></div>
-    <div class="card-bd">
-      <div class="goals" id="goals-row"></div>
-      <div class="bars" id="bar-chart"></div>
-      <div class="leg">
-        <div class="li"><div class="ld" style="background:#3D9A5C"></div>Actual</div>
-        <div class="li"><div class="ld" style="background:#E5E7EB"></div>Goal</div>
-      </div>
+
+  <div class="two" style="margin-bottom:18px">
+    <!-- Current month ring -->
+    <div class="card">
+      <div class="card-hd"><h3 id="cur-month-title">This Month vs Goal</h3></div>
+      <div class="card-bd"><div class="ring-wrap" id="ring-wrap"></div></div>
+    </div>
+    <!-- YTD progress -->
+    <div class="card">
+      <div class="card-hd"><h3>YTD Progress</h3><span id="ytd-year"></span></div>
+      <div class="card-bd" id="ytd-progress"></div>
     </div>
   </div>
+
+  <!-- Monthly bars -->
+  <div class="card">
+    <div class="card-hd"><h3>Sales by Month</h3><span id="chart-year"></span></div>
+    <div class="card-bd"><div class="month-grid" id="month-grid"></div></div>
+  </div>
+
   <div class="two">
     <div class="card">
       <div class="card-hd"><h3>YTD Sales by Contact</h3><span>Top 10</span></div>
@@ -126,19 +141,19 @@ tr:hover td{background:#F9FAFB}
 
 <script>
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const CACHE_KEY = "printavo_data_v3";
-const GOALS_KEY = "printavo_goals_v1";
+const CACHE_KEY = "printavo_data_v4";
 const REFRESH_MS = 30 * 60 * 1000;
-let goals = JSON.parse(localStorage.getItem(GOALS_KEY) || "null") || Array(12).fill(260000);
+// Locked monthly goals — edit here in code only
+const MONTHLY_GOALS = [260000,260000,260000,260000,260000,260000,260000,260000,260000,260000,260000,260000];
 let isLoading = false;
 let lastInvoices = [], lastQuotes = [];
 
 const fmt  = n => new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}).format(n||0);
 const fmtN = n => new Intl.NumberFormat("en-US").format(n||0);
-const sortDesc = arr => [...arr].sort((a,b) => parseInt(b.visualId||0) - parseInt(a.visualId||0));
+const sortDesc = arr => [...arr].reverse();
 
-function pillClass(s) {
-  const l = (s||"").toLowerCase();
+function pillClass(s){
+  const l=(s||"").toLowerCase();
   if(l.includes("paid")||l.includes("complete")) return "pa";
   if(l.includes("invoice")) return "pi";
   if(l.includes("quote")) return "pq";
@@ -146,202 +161,215 @@ function pillClass(s) {
   return "pp";
 }
 
-function setProgress(pct, label) {
-  const bar = document.getElementById("progress-bar");
-  if(bar) bar.style.width = Math.min(95, pct) + "%";
-  const lbl = document.getElementById("progress-label");
-  if(lbl) lbl.textContent = label;
+function setProgress(pct, label){
+  const bar=document.getElementById("progress-bar");
+  if(bar) bar.style.width=Math.min(95,pct)+"%";
+  const lbl=document.getElementById("progress-label");
+  if(lbl) lbl.textContent=label;
 }
 
-async function fetchPage(type, cursor) {
+async function fetchPage(type, cursor){
   const after = cursor ? `,after:"${cursor}"` : "";
   const q = `query{${type}(first:25,sortOn:VISUAL_ID${after}){nodes{id visualId createdAt total amountOutstanding status{name}contact{fullName}}pageInfo{hasNextPage endCursor}}}`;
-  const res = await fetch("/api/printavo", {
-    method: "POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({query: q})
-  });
-  if(!res.ok) throw new Error("Proxy error: " + res.status);
+  const res = await fetch("/api/printavo",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({query:q})});
+  if(!res.ok) throw new Error("Proxy error: "+res.status);
   const json = await res.json();
   if(json.errors) throw new Error(json.errors.map(e=>e.message).join(", "));
-  if(!json.data || !json.data[type]) throw new Error("No " + type + " data returned");
+  if(!json.data||!json.data[type]) throw new Error("No "+type+" data returned");
   return json.data[type];
 }
 
-async function fetchAll(type, onProgress) {
-  const nodes = [];
-  let cursor = null, page = 0;
+async function fetchAll(type, onProgress){
+  const nodes=[]; let cursor=null, page=0;
   do {
     page++;
     if(onProgress) onProgress(page, nodes.length);
     const result = await fetchPage(type, cursor);
     nodes.push(...result.nodes);
     cursor = result.pageInfo.hasNextPage ? result.pageInfo.endCursor : null;
-    if(cursor) await new Promise(r => setTimeout(r, 700));
+    if(cursor) await new Promise(r=>setTimeout(r,700));
   } while(cursor);
   return nodes;
 }
 
-async function startLoad(forceRefresh) {
+async function startLoad(forceRefresh){
   if(isLoading) return;
-  isLoading = true;
-  document.getElementById("refresh-btn").disabled = true;
+  isLoading=true;
+  document.getElementById("refresh-btn").disabled=true;
 
-  // Load from cache first for instant display
-  if(!forceRefresh) {
-    try {
-      const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
-      if(cached && cached.invoices && cached.quotes) {
-        lastInvoices = cached.invoices;
-        lastQuotes = cached.quotes;
-        render(lastInvoices, lastQuotes);
-        show("dashboard"); hide("loading"); hide("error-wrap");
-        document.getElementById("last-updated").textContent = "Cached · " + new Date(cached.timestamp).toLocaleTimeString();
-        isLoading = false;
-        document.getElementById("refresh-btn").disabled = false;
-        // Schedule background refresh
-        setTimeout(() => startLoad(true), REFRESH_MS);
+  if(!forceRefresh){
+    try{
+      const cached=JSON.parse(localStorage.getItem(CACHE_KEY)||"null");
+      if(cached&&cached.invoices&&cached.quotes){
+        lastInvoices=cached.invoices; lastQuotes=cached.quotes;
+        render(lastInvoices,lastQuotes);
+        show("dashboard");hide("loading");hide("error-wrap");
+        document.getElementById("last-updated").textContent="Cached · "+new Date(cached.timestamp).toLocaleTimeString();
+        isLoading=false;
+        document.getElementById("refresh-btn").disabled=false;
+        setTimeout(()=>startLoad(true),REFRESH_MS);
         return;
       }
-    } catch(e) {}
+    }catch(e){}
   }
 
-  show("loading"); hide("dashboard"); hide("error-wrap");
-  setProgress(5, "Starting...");
+  show("loading");hide("dashboard");hide("error-wrap");
+  setProgress(5,"Starting...");
 
-  try {
-    setProgress(10, "Fetching invoices...");
-    const invoices = sortDesc(await fetchAll("invoices", (p, c) => {
-      setProgress(10 + p * 5, `Fetching invoices: ${c} records (page ${p})...`);
-    }));
+  try{
+    setProgress(10,"Fetching invoices...");
+    const invoices=sortDesc(await fetchAll("invoices",(p,c)=>setProgress(10+p*4,`Fetching invoices: ${c} records (page ${p})...`)));
+    setProgress(60,"Fetching quotes...");
+    const quotes=sortDesc(await fetchAll("quotes",(p,c)=>setProgress(60+p*4,`Fetching quotes: ${c} records (page ${p})...`)));
 
-    setProgress(55, "Fetching quotes...");
-    const quotes = sortDesc(await fetchAll("quotes", (p, c) => {
-      setProgress(55 + p * 5, `Fetching quotes: ${c} records (page ${p})...`);
-    }));
-
-    setProgress(100, "Done!");
-    lastInvoices = invoices;
-    lastQuotes = quotes;
-
-    localStorage.setItem(CACHE_KEY, JSON.stringify({invoices, quotes, timestamp: Date.now()}));
-    document.getElementById("last-updated").textContent = "Updated " + new Date().toLocaleTimeString();
-
-    render(invoices, quotes);
-    show("dashboard"); hide("loading"); hide("error-wrap");
-    setTimeout(() => startLoad(true), REFRESH_MS);
-
-  } catch(e) {
-    document.getElementById("error-msg").textContent = e.message;
-    if(lastInvoices.length > 0) {
-      show("dashboard"); hide("loading"); hide("error-wrap");
-      document.getElementById("last-updated").textContent = "Refresh failed — showing cached data";
-    } else {
-      show("error-wrap"); hide("loading"); hide("dashboard");
-    }
-  } finally {
-    isLoading = false;
-    document.getElementById("refresh-btn").disabled = false;
+    lastInvoices=invoices; lastQuotes=quotes;
+    localStorage.setItem(CACHE_KEY,JSON.stringify({invoices,quotes,timestamp:Date.now()}));
+    document.getElementById("last-updated").textContent="Updated "+new Date().toLocaleTimeString();
+    render(invoices,quotes);
+    show("dashboard");hide("loading");hide("error-wrap");
+    setTimeout(()=>startLoad(true),REFRESH_MS);
+  }catch(e){
+    document.getElementById("error-msg").textContent=e.message;
+    if(lastInvoices.length>0){show("dashboard");hide("loading");hide("error-wrap");document.getElementById("last-updated").textContent="Refresh failed — cached data shown";}
+    else{show("error-wrap");hide("loading");hide("dashboard");}
+  }finally{
+    isLoading=false;
+    document.getElementById("refresh-btn").disabled=false;
   }
 }
 
-function render(invoices, quotes) {
-  const now = new Date();
-  const ys  = new Date(now.getFullYear(), 0, 1);
-  const ws  = new Date(now); ws.setDate(now.getDate() - now.getDay());
-  const cm  = now.getMonth();
+function render(invoices, quotes){
+  const now=new Date();
+  const year=now.getFullYear();
+  const ys=new Date(year,0,1);
+  const ws=new Date(now); ws.setDate(now.getDate()-now.getDay());
+  const cm=now.getMonth();
 
-  const validQ = quotes.filter(q => {
-    const s = (q.status && q.status.name || "").toLowerCase();
-    return s && !s.includes("ignore") && !s.includes("blank");
+  // Debug: log date range of invoices to console
+  if(invoices.length>0){
+    const dates=invoices.map(i=>i.createdAt).filter(Boolean).sort();
+    console.log("Invoice date range:",dates[0],"to",dates[dates.length-1]);
+  }
+
+  const validQ=quotes.filter(q=>{const s=(q.status&&q.status.name||"").toLowerCase();return s&&!s.includes("ignore")&&!s.includes("blank");});
+
+  // YTD filter — try both full date and year prefix matching
+  const ytdInv=invoices.filter(i=>{
+    if(!i.createdAt) return false;
+    const d=new Date(i.createdAt);
+    if(!isNaN(d.getTime())) return d>=ys;
+    return i.createdAt.startsWith(year+"");
   });
 
-  const ytdInv     = invoices.filter(i => new Date(i.createdAt) >= ys);
-  const ytdSales   = ytdInv.reduce((s,i) => s + (parseFloat(i.total)||0), 0);
-  const outstanding= invoices.reduce((s,i) => s + (parseFloat(i.amountOutstanding)||0), 0);
-  const openOrders = invoices.filter(i => {
-    const s = (i.status && i.status.name || "").toLowerCase();
-    return !s.includes("paid") && !s.includes("cancelled") && !s.includes("complete");
-  });
-  const qWeek = validQ.filter(q => new Date(q.createdAt) >= ws);
+  const ytdSales=ytdInv.reduce((s,i)=>s+(parseFloat(i.total)||0),0);
+  const outstanding=invoices.reduce((s,i)=>s+(parseFloat(i.amountOutstanding)||0),0);
+  const openOrders=invoices.filter(i=>{const s=(i.status&&i.status.name||"").toLowerCase();return !s.includes("paid")&&!s.includes("cancelled")&&!s.includes("complete");});
+  const qWeek=validQ.filter(q=>{const d=new Date(q.createdAt);return !isNaN(d.getTime())&&d>=ws;});
 
-  const monthly = Array(12).fill(0);
-  ytdInv.forEach(i => { const m = new Date(i.createdAt).getMonth(); monthly[m] += (parseFloat(i.total)||0); });
+  const monthly=Array(12).fill(0);
+  ytdInv.forEach(i=>{const d=new Date(i.createdAt);if(!isNaN(d.getTime())){const m=d.getMonth();monthly[m]+=(parseFloat(i.total)||0);}});
 
-  const umap = {};
-  ytdInv.forEach(i => { const n = (i.contact&&i.contact.fullName)||"Unassigned"; umap[n] = (umap[n]||0) + (parseFloat(i.total)||0); });
-  const byUser = Object.entries(umap).sort((a,b) => b[1]-a[1]).slice(0,10);
+  const umap={};
+  ytdInv.forEach(i=>{const n=(i.contact&&i.contact.fullName)||"Unassigned";umap[n]=(umap[n]||0)+(parseFloat(i.total)||0);});
+  const byUser=Object.entries(umap).sort((a,b)=>b[1]-a[1]).slice(0,10);
 
-  const conv   = validQ.length > 0 ? Math.min(100, (invoices.length/(invoices.length+validQ.length))*100) : 0;
-  const cmSales= monthly[cm], cmGoal = goals[cm];
-  const pct    = cmGoal > 0 ? Math.min(100,(cmSales/cmGoal)*100).toFixed(0) : 0;
+  const conv=validQ.length>0?Math.min(100,(invoices.length/(invoices.length+validQ.length))*100):0;
+  const cmSales=monthly[cm], cmGoal=MONTHLY_GOALS[cm];
+  const cmPct=cmGoal>0?Math.min(100,(cmSales/cmGoal)*100):0;
+  const ytdGoal=MONTHLY_GOALS.slice(0,cm+1).reduce((s,g)=>s+g,0);
+  const ytdPct=ytdGoal>0?Math.min(100,(ytdSales/ytdGoal)*100):0;
 
-  document.getElementById("chart-year").textContent = now.getFullYear();
-  document.getElementById("orders-count").textContent = fmtN(invoices.length) + " total";
+  document.getElementById("dash-sub").textContent=`${fmtN(invoices.length)} total orders · ${fmtN(ytdInv.length)} this year · Last updated ${new Date().toLocaleTimeString()}`;
+  document.getElementById("orders-count").textContent=fmtN(invoices.length)+" total";
+  document.getElementById("chart-year").textContent=year;
+  document.getElementById("ytd-year").textContent=year;
+  document.getElementById("cur-month-title").textContent=MONTHS[cm]+" vs Goal";
 
-  document.getElementById("kpis").innerHTML = `
-    <div class="kpi"><div><div class="kpi-lbl">YTD Sales</div><div class="kpi-val" style="color:#3D9A5C">${fmt(ytdSales)}</div><div class="kpi-s">${now.getFullYear()} year to date</div></div><div class="kpi-ico ig">💰</div></div>
+  // KPIs
+  document.getElementById("kpis").innerHTML=`
+    <div class="kpi"><div><div class="kpi-lbl">YTD Sales</div><div class="kpi-val" style="color:#3D9A5C">${fmt(ytdSales)}</div><div class="kpi-s">${year} year to date</div></div><div class="kpi-ico ig">💰</div></div>
     <div class="kpi"><div><div class="kpi-lbl">Outstanding Invoices</div><div class="kpi-val" style="color:#DC2626">${fmt(outstanding)}</div><div class="kpi-s">Unpaid balance</div></div><div class="kpi-ico ir">📄</div></div>
     <div class="kpi"><div><div class="kpi-lbl">Open Orders</div><div class="kpi-val">${fmtN(openOrders.length)}</div><div class="kpi-s">of ${fmtN(invoices.length)} total</div></div><div class="kpi-ico ia">📦</div></div>
     <div class="kpi"><div><div class="kpi-lbl">Quotes This Week</div><div class="kpi-val">${fmtN(qWeek.length)}</div><div class="kpi-s">${fmtN(validQ.length)} total on record</div></div><div class="kpi-ico ib">📝</div></div>
     <div class="kpi"><div><div class="kpi-lbl">Conversion Rate</div><div class="kpi-val">${conv.toFixed(1)}%</div><div class="kpi-s">Quotes to orders</div></div><div class="kpi-ico ig">📈</div></div>
-    <div class="kpi"><div><div class="kpi-lbl">This Month vs Goal</div><div class="kpi-val" style="color:${cmSales>=cmGoal?"#3D9A5C":"#D97706"}">${fmt(cmSales)}</div><div class="kpi-s">Goal: ${fmt(cmGoal)} — ${pct}% attained</div></div><div class="kpi-ico ia">🎯</div></div>
   `;
 
-  // Goals inputs
-  const gr = document.getElementById("goals-row");
-  gr.innerHTML = '<span style="font-size:12px;color:#6B7280;align-self:center;white-space:nowrap">Monthly goals ($):</span>';
-  MONTHS.forEach((m,i) => {
-    const d = document.createElement("div"); d.className = "gc";
-    d.innerHTML = `<label>${m}</label><input type="number" value="${goals[i]}" data-idx="${i}"/>`;
-    d.querySelector("input").addEventListener("change", e => {
-      goals[parseInt(e.target.dataset.idx)] = parseFloat(e.target.value)||0;
-      localStorage.setItem(GOALS_KEY, JSON.stringify(goals));
-      render(lastInvoices, lastQuotes);
-    });
-    gr.appendChild(d);
-  });
+  // Ring chart — current month
+  const ringColor = cmPct>=100?"#3D9A5C":cmPct>=75?"#3D9A5C":cmPct>=50?"#D97706":"#DC2626";
+  const r=54, circ=2*Math.PI*r, dash=circ*(cmPct/100), gap=circ-dash;
+  document.getElementById("ring-wrap").innerHTML=`
+    <svg class="ring-svg" width="140" height="140" viewBox="0 0 140 140">
+      <circle cx="70" cy="70" r="${r}" fill="none" stroke="#F3F4F6" stroke-width="14"/>
+      <circle cx="70" cy="70" r="${r}" fill="none" stroke="${ringColor}" stroke-width="14"
+        stroke-dasharray="${dash.toFixed(1)} ${gap.toFixed(1)}"
+        stroke-linecap="round" transform="rotate(-90 70 70)"
+        style="transition:stroke-dasharray .8s ease"/>
+      <text x="70" y="66" text-anchor="middle" font-size="18" font-weight="700" fill="#111827">${Math.round(cmPct)}%</text>
+      <text x="70" y="84" text-anchor="middle" font-size="11" fill="#6B7280">of goal</text>
+    </svg>
+    <div class="ring-info">
+      <div><div style="font-size:12px;color:#6B7280;margin-bottom:2px">Actual</div><div class="ring-val" style="color:${ringColor}">${fmt(cmSales)}</div></div>
+      <div><div style="font-size:12px;color:#6B7280;margin-bottom:2px">Goal</div><div style="font-size:18px;font-weight:600">${fmt(cmGoal)}</div></div>
+      <div style="font-size:12px;color:#6B7280">${fmt(cmGoal-cmSales)} remaining</div>
+    </div>
+  `;
 
-  renderChart(monthly, cm);
+  // YTD progress bar
+  const ytdColor=ytdPct>=100?"#3D9A5C":ytdPct>=75?"#3D9A5C":ytdPct>=50?"#D97706":"#DC2626";
+  document.getElementById("ytd-progress").innerHTML=`
+    <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+      <div><div style="font-size:12px;color:#6B7280;margin-bottom:2px">YTD Actual</div><div style="font-size:24px;font-weight:700;color:${ytdColor}">${fmt(ytdSales)}</div></div>
+      <div style="text-align:right"><div style="font-size:12px;color:#6B7280;margin-bottom:2px">YTD Goal</div><div style="font-size:24px;font-weight:700">${fmt(ytdGoal)}</div></div>
+    </div>
+    <div style="height:14px;background:#F3F4F6;border-radius:99px;overflow:hidden;margin-bottom:8px">
+      <div style="height:100%;width:${ytdPct.toFixed(1)}%;background:${ytdColor};border-radius:99px;transition:width .8s ease"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:#6B7280">
+      <span>${ytdPct.toFixed(1)}% attained through ${MONTHS[cm]}</span>
+      <span>${fmt(ytdGoal-ytdSales)} remaining</span>
+    </div>
+  `;
 
-  document.getElementById("user-table").innerHTML = byUser.length
-    ? byUser.map(([n,a]) => `<tr><td>${n}</td><td style="text-align:right;font-weight:600;color:#3D9A5C">${fmt(a)}</td></tr>`).join("")
-    : `<tr><td colspan="2" style="color:#9CA3AF;text-align:center;padding:20px">No YTD sales</td></tr>`;
+  // Monthly progress bars
+  document.getElementById("month-grid").innerHTML=MONTHS.slice(0,cm+1).map((m,i)=>{
+    const actual=monthly[i], goal=MONTHLY_GOALS[i];
+    const pct=goal>0?Math.min(100,(actual/goal)*100):0;
+    const color=pct>=100?"#3D9A5C":pct>=75?"#3D9A5C":pct>=50?"#D97706":"#DC2626";
+    const isCurrentMonth=i===cm;
+    return`<div class="month-card" style="${isCurrentMonth?"background:#F9FFF9;border:1px solid #D1FAE5;border-radius:8px;padding:10px;margin:-2px":""}">
+      <div class="month-label">${m}${isCurrentMonth?" ·":""}${isCurrentMonth?` <span style="font-size:10px;color:#3D9A5C;font-weight:500">Current</span>":""}</div>
+      <div class="month-cur">${fmt(actual)}</div>
+      <div class="month-track"><div class="month-fill" style="width:${pct.toFixed(1)}%;background:${color}"></div></div>
+      <div class="month-vals"><span style="color:${color};font-weight:600">${Math.round(pct)}%</span><span>${fmt(goal)}</span></div>
+    </div>`;
+  }).join("");
 
-  document.getElementById("quotes-table").innerHTML = validQ.slice(0,10).length
-    ? validQ.slice(0,10).map(q => `<tr>
+  // Sales by user
+  document.getElementById("user-table").innerHTML=byUser.length
+    ?byUser.map(([n,a])=>`<tr><td>${n}</td><td style="text-align:right;font-weight:600;color:#3D9A5C">${fmt(a)}</td></tr>`).join("")
+    :`<tr><td colspan="2" style="color:#9CA3AF;text-align:center;padding:20px">No YTD sales data yet</td></tr>`;
+
+  document.getElementById("quotes-table").innerHTML=validQ.slice(0,10).length
+    ?validQ.slice(0,10).map(q=>`<tr>
         <td style="color:#6B7280">${q.visualId||""}</td>
         <td>${(q.contact&&q.contact.fullName)||"—"}</td>
         <td style="text-align:right">${fmt(q.total)}</td>
         <td><span class="pill ${pillClass(q.status&&q.status.name)}">${(q.status&&q.status.name)||"—"}</span></td>
       </tr>`).join("")
-    : `<tr><td colspan="4" style="color:#9CA3AF;text-align:center;padding:20px">No quotes</td></tr>`;
+    :`<tr><td colspan="4" style="color:#9CA3AF;text-align:center;padding:20px">No quotes</td></tr>`;
 
-  document.getElementById("orders-table").innerHTML = invoices.slice(0,20).map(o => `<tr>
+  document.getElementById("orders-table").innerHTML=invoices.slice(0,20).map(o=>`<tr>
     <td style="color:#6B7280">${o.visualId||""}</td>
     <td>${(o.contact&&o.contact.fullName)||"—"}</td>
-    <td style="color:#6B7280;white-space:nowrap">${new Date(o.createdAt).toLocaleDateString()}</td>
+    <td style="color:#6B7280;white-space:nowrap">${o.createdAt?new Date(o.createdAt).toLocaleDateString():"—"}</td>
     <td style="text-align:right;font-weight:600">${fmt(o.total)}</td>
     <td style="text-align:right;color:${parseFloat(o.amountOutstanding)>0?"#DC2626":"#3D9A5C"}">${fmt(o.amountOutstanding)}</td>
     <td><span class="pill ${pillClass(o.status&&o.status.name)}">${(o.status&&o.status.name)||"—"}</span></td>
   </tr>`).join("");
 }
 
-function renderChart(monthly, cm) {
-  const max = Math.max(...monthly, ...goals, 1);
-  document.getElementById("bar-chart").innerHTML = MONTHS.slice(0, cm+1).map((m,i) => {
-    const ah = Math.round((monthly[i]/max)*120);
-    const gh = Math.round((goals[i]/max)*120);
-    return `<div class="bc"><div class="bw">
-      <div class="bar bg" style="height:${gh}px" title="Goal: ${fmt(goals[i])}"></div>
-      <div class="bar ba" style="height:${ah}px" title="Actual: ${fmt(monthly[i])}"></div>
-    </div><div class="bl">${m}</div></div>`;
-  }).join("");
-}
-
 function show(id){document.getElementById(id).style.display="";}
 function hide(id){document.getElementById(id).style.display="none";}
-
 startLoad(false);
 </script>
 </body>
