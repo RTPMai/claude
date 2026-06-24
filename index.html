@@ -126,7 +126,7 @@ tr:hover td{background:#F9FAFB}
 
 <script>
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const GQL = `query{invoices(first:100){nodes{id visualId total amountOutstanding createdAt status{name}contact{fullName}}}quotes(first:100){nodes{id visualId total createdAt status{name}contact{fullName}}}}`;
+const GQL = `query{invoices(first:25){nodes{id visualId total amountOutstanding createdAt status{name}contact{fullName}}}quotes(first:25){nodes{id visualId total createdAt status{name}contact{fullName}}}}`;
 let goals = Array(12).fill(25000);
 let lastData = null;
 
