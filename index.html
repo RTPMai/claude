@@ -337,7 +337,7 @@ function render(invoices, quotes){
     const color=pct>=100?"#3D9A5C":pct>=75?"#3D9A5C":pct>=50?"#D97706":"#DC2626";
     const isCurrentMonth=i===cm;
     return`<div class="month-card" style="${isCurrentMonth?"background:#F9FFF9;border:1px solid #D1FAE5;border-radius:8px;padding:10px;margin:-2px":""}">
-      <div class="month-label">${m}${isCurrentMonth?" ·":""}${isCurrentMonth?` <span style="font-size:10px;color:#3D9A5C;font-weight:500">Current</span>":""}</div>
+      <div class="month-label">${m}${isCurrentMonth?" · Current":""}</div>
       <div class="month-cur">${fmt(actual)}</div>
       <div class="month-track"><div class="month-fill" style="width:${pct.toFixed(1)}%;background:${color}"></div></div>
       <div class="month-vals"><span style="color:${color};font-weight:600">${Math.round(pct)}%</span><span>${fmt(goal)}</span></div>
