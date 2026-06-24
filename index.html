@@ -13,14 +13,21 @@ body{background:#F4F6F8;color:#111827;font-family:'Inter',sans-serif;font-size:1
 .logomark{width:32px;height:32px;background:#3D9A5C;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:15px}
 .hdr-title{font-size:15px;font-weight:700}
 .hdr-sub{font-size:12px;color:#6B7280}
-.hdr-right{display:flex;align-items:center;gap:12px}
-.rbtn{background:#3D9A5C;border:none;color:#fff;padding:7px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600}
-.rbtn:hover{background:#2F7A48}
-.rbtn:disabled{opacity:.5;cursor:not-allowed}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.btn{border:none;padding:7px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;transition:background .15s}
+.btn-green{background:#3D9A5C;color:#fff}.btn-green:hover{background:#2F7A48}
+.btn-gray{background:#F3F4F6;color:#374151;border:1px solid #E5E7EB}.btn-gray:hover{background:#E5E7EB}
+.btn:disabled{opacity:.5;cursor:not-allowed}
 .last-updated{font-size:11px;color:#9CA3AF}
+/* Nav tabs */
+.nav{display:flex;gap:2px;background:#F3F4F6;border-radius:8px;padding:3px}
+.nav-btn{border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;background:transparent;color:#6B7280;transition:all .15s}
+.nav-btn.active{background:#fff;color:#111827;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+/* Pages */
+.page{display:none}.page.active{display:block}
 .dash{padding:28px 32px}
-.dash h2{font-size:22px;font-weight:700}
-.dash-sub{font-size:13px;color:#6B7280;margin-top:2px;margin-bottom:24px}
+.section-title{font-size:22px;font-weight:700;margin-bottom:4px}
+.section-sub{font-size:13px;color:#6B7280;margin-bottom:24px}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:14px;margin-bottom:24px}
 .kpi{background:#fff;border:1px solid #E5E7EB;border-radius:10px;padding:18px 20px;display:flex;justify-content:space-between;align-items:flex-start}
 .kpi-lbl{font-size:13px;color:#6B7280;font-weight:500;margin-bottom:5px}
@@ -37,28 +44,32 @@ table{width:100%;border-collapse:collapse;font-size:13px}
 th{text-align:left;font-size:11px;letter-spacing:.4px;text-transform:uppercase;color:#6B7280;padding:0 12px 10px 0;font-weight:600}
 td{padding:10px 12px 10px 0;border-top:1px solid #E5E7EB;color:#111827}
 tr:hover td{background:#F9FAFB}
-.pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600}
-.pp{background:#FEF3C7;color:#D97706}.pa{background:#EAF5EE;color:#3D9A5C}
-.pi{background:#FEE2E2;color:#DC2626}.pq{background:#F3F4F6;color:#6B7280}.pr{background:#EFF6FF;color:#2563EB}
-
-/* Month progress bars */
-.month-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
-.month-card{display:flex;flex-direction:column;gap:6px}
-.month-label{font-size:12px;font-weight:600;color:#374151}
-.month-vals{display:flex;justify-content:space-between;font-size:11px;color:#6B7280}
-.month-track{height:10px;background:#F3F4F6;border-radius:99px;overflow:hidden;position:relative}
+.pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;background:#F3F4F6;color:#374151}
+/* Ring + progress */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.ring-wrap{display:flex;align-items:center;gap:28px;padding:4px 0}
+.month-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.month-card{display:flex;flex-direction:column;gap:5px;padding:10px;border-radius:8px;border:1px solid #E5E7EB}
+.month-card.current{border-color:#BBF7D0;background:#F0FDF4}
+.month-lbl{font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.4px}
+.month-val{font-size:15px;font-weight:700;color:#111827}
+.month-track{height:8px;background:#F3F4F6;border-radius:99px;overflow:hidden}
 .month-fill{height:100%;border-radius:99px;transition:width .6s ease}
 .month-pct{font-size:11px;font-weight:600}
-.month-cur{font-size:12px;font-weight:600;color:#111827}
-
-/* Ring chart for current month */
-.ring-wrap{display:flex;align-items:center;gap:32px;padding:8px 0}
-.ring-svg{flex-shrink:0}
-.ring-info{display:flex;flex-direction:column;gap:8px}
-.ring-val{font-size:32px;font-weight:700;letter-spacing:-1px}
-.ring-goal{font-size:13px;color:#6B7280}
-.ring-pct{font-size:14px;font-weight:600}
-
+/* Settings */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.settings-card{background:#fff;border:1px solid #E5E7EB;border-radius:10px;overflow:hidden}
+.settings-card-hd{padding:14px 20px;border-bottom:1px solid #E5E7EB;background:#F9FAFB}
+.settings-card-hd h3{font-size:14px;font-weight:600;margin-bottom:2px}
+.settings-card-hd p{font-size:12px;color:#6B7280}
+.status-list{padding:12px 16px;display:flex;flex-direction:column;gap:2px;max-height:400px;overflow-y:auto}
+.status-item{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:6px;cursor:pointer;transition:background .1s}
+.status-item:hover{background:#F9FAFB}
+.status-item input[type=checkbox]{width:15px;height:15px;accent-color:#3D9A5C;cursor:pointer;flex-shrink:0}
+.status-item label{cursor:pointer;font-size:13px;color:#374151;flex:1}
+.settings-actions{padding:16px 20px;border-top:1px solid #E5E7EB;display:flex;gap:10px;align-items:center}
+.save-toast{font-size:12px;color:#3D9A5C;font-weight:500;opacity:0;transition:opacity .3s}
+/* Loading */
 .spin-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:80px 32px}
 .spinner{width:32px;height:32px;border:3px solid #E5E7EB;border-top-color:#3D9A5C;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -66,12 +77,12 @@ tr:hover td{background:#F9FAFB}
 .progress-bar{height:100%;background:#3D9A5C;border-radius:99px;transition:width .3s ease}
 .progress-label{font-size:12px;color:#6B7280;text-align:center}
 .err{background:#FEE2E2;border:1px solid #FECACA;border-radius:8px;padding:14px 18px;color:#DC2626;margin-bottom:18px}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-@media(max-width:900px){.month-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:900px){.month-grid{grid-template-columns:repeat(3,1fr)}.settings-grid{grid-template-columns:1fr}}
 @media(max-width:700px){.two{grid-template-columns:1fr}.dash{padding:16px}.hdr{padding:0 16px}.month-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
+
 <div class="hdr">
   <div class="logo">
     <div class="logomark">P</div>
@@ -79,99 +90,135 @@ tr:hover td{background:#F9FAFB}
   </div>
   <div class="hdr-right">
     <div class="last-updated" id="last-updated"></div>
-    <button class="rbtn" id="refresh-btn" onclick="startLoad(true)" disabled>Refresh</button>
+    <div class="nav">
+      <button class="nav-btn active" onclick="showPage('dashboard')">Dashboard</button>
+      <button class="nav-btn" onclick="showPage('settings')">Settings</button>
+    </div>
+    <button class="btn btn-green" id="refresh-btn" onclick="startLoad(true)" disabled>Refresh</button>
   </div>
 </div>
 
+<!-- Loading -->
 <div id="loading" class="spin-wrap">
   <div class="spinner"></div>
   <div style="font-size:14px;font-weight:600;color:#111827">Loading your Printavo data</div>
   <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:5%"></div></div>
   <div class="progress-label" id="progress-label">Fetching records...</div>
 </div>
+
+<!-- Error -->
 <div id="error-wrap" style="display:none" class="dash">
   <div class="err" id="error-msg"></div>
-  <button class="rbtn" onclick="startLoad(true)">Retry</button>
+  <button class="btn btn-green" onclick="startLoad(true)">Retry</button>
 </div>
-<div id="dashboard" style="display:none" class="dash">
-  <h2>Dashboard</h2>
-  <div class="dash-sub" id="dash-sub">Your shop performance overview</div>
-  <div class="kpis" id="kpis"></div>
 
-  <div class="two" style="margin-bottom:18px">
-    <!-- Current month ring -->
-    <div class="card">
-      <div class="card-hd"><h3 id="cur-month-title">This Month vs Goal</h3></div>
-      <div class="card-bd"><div class="ring-wrap" id="ring-wrap"></div></div>
-    </div>
-    <!-- YTD progress -->
-    <div class="card">
-      <div class="card-hd"><h3>YTD Progress</h3><span id="ytd-year"></span></div>
-      <div class="card-bd" id="ytd-progress"></div>
-    </div>
-  </div>
-
-  <!-- Monthly bars -->
-  <div class="card">
-    <div class="card-hd"><h3>Sales by Month</h3><span id="chart-year"></span></div>
-    <div class="card-bd"><div class="month-grid" id="month-grid"></div></div>
-  </div>
-
-  <div class="two">
-    <div class="card">
-      <div class="card-hd"><h3>YTD Sales by Contact</h3><span>Top 10</span></div>
-      <div class="card-bd" style="padding:12px 20px">
-        <table><thead><tr><th>Contact</th><th style="text-align:right">Sales</th></tr></thead><tbody id="user-table"></tbody></table>
+<!-- Dashboard page -->
+<div id="page-dashboard" class="page active">
+  <div class="dash">
+    <div class="section-title">Dashboard</div>
+    <div class="section-sub" id="dash-sub">Your shop performance overview</div>
+    <div class="kpis" id="kpis"></div>
+    <div class="two" style="margin-bottom:18px">
+      <div class="card">
+        <div class="card-hd"><h3 id="cur-month-title">This Month vs Goal</h3></div>
+        <div class="card-bd"><div class="ring-wrap" id="ring-wrap"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><h3>YTD Progress</h3><span id="ytd-year"></span></div>
+        <div class="card-bd" id="ytd-progress"></div>
       </div>
     </div>
     <div class="card">
-      <div class="card-hd"><h3>Recent Quotes</h3><span>Last 10</span></div>
-      <div class="card-bd" style="padding:12px 20px">
-        <table><thead><tr><th>#</th><th>Contact</th><th style="text-align:right">Total</th><th>Status</th></tr></thead><tbody id="quotes-table"></tbody></table>
+      <div class="card-hd"><h3>Sales by Month</h3><span id="chart-year"></span></div>
+      <div class="card-bd"><div class="month-grid" id="month-grid"></div></div>
+    </div>
+    <div class="two">
+      <div class="card">
+        <div class="card-hd"><h3>YTD Sales by Contact</h3><span>Top 10</span></div>
+        <div class="card-bd" style="padding:12px 20px">
+          <table><thead><tr><th>Contact</th><th style="text-align:right">Sales</th></tr></thead><tbody id="user-table"></tbody></table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><h3>Recent Quotes</h3><span>Last 10</span></div>
+        <div class="card-bd" style="padding:12px 20px">
+          <table><thead><tr><th>#</th><th>Contact</th><th style="text-align:right">Total</th><th>Status</th></tr></thead><tbody id="quotes-table"></tbody></table>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><h3>Recent Orders</h3><span id="orders-count"></span></div>
+      <div class="card-bd" style="padding:12px 20px;overflow-x:auto">
+        <table><thead><tr><th>#</th><th>Contact</th><th>Created</th><th style="text-align:right">Total</th><th style="text-align:right">Outstanding</th><th>Status</th></tr></thead><tbody id="orders-table"></tbody></table>
       </div>
     </div>
   </div>
-  <div class="card">
-    <div class="card-hd"><h3>Recent Orders</h3><span id="orders-count"></span></div>
-    <div class="card-bd" style="padding:12px 20px;overflow-x:auto">
-      <table><thead><tr><th>#</th><th>Contact</th><th>Created</th><th style="text-align:right">Total</th><th style="text-align:right">Outstanding</th><th>Status</th></tr></thead><tbody id="orders-table"></tbody></table>
-    </div>
+</div>
+
+<!-- Settings page -->
+<div id="page-settings" class="page">
+  <div class="dash">
+    <div class="section-title">Settings</div>
+    <div class="section-sub">Choose which statuses appear in each section of the dashboard. Changes are saved automatically.</div>
+    <div class="settings-grid" id="settings-grid"></div>
   </div>
 </div>
 
 <script>
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const CACHE_KEY = "printavo_data_v4";
+const CACHE_KEY = "printavo_data_v5";
+const SETTINGS_KEY = "printavo_settings_v1";
 const REFRESH_MS = 30 * 60 * 1000;
-// Locked monthly goals — edit here in code only
 const MONTHLY_GOALS = [260000,260000,260000,260000,260000,260000,260000,260000,260000,260000,260000,260000];
+
 let isLoading = false;
-let lastInvoices = [], lastQuotes = [];
+let lastInvoices = [], lastQuotes = [], allStatuses = [];
+let currentPage = 'dashboard';
+
+// Default settings — which status IDs count for each report section
+const DEFAULT_SETTINGS = {
+  // Sales / YTD — orders that represent real revenue
+  sales: ["287234","290837","282596","290839","299246","381261","307397","290840",
+          "282597","282598","282599","282600","282601","282602","282603","282604",
+          "282605","282606","282607","282608","461543","461544","461545","461546",
+          "461547","461548","461549","461550"],
+  // Open orders — in active production pipeline
+  open: ["287234","290837","282596","290839","299246","381261","307397","290840",
+         "282597","282598","282599","282600","282601","282602","282603"],
+  // Quotes — active quote statuses only
+  quotes: ["282593","282594","287230","287231","287232","454823","454824","282595","287234"],
+  // Outstanding — unpaid
+  outstanding: ["282595","287234","290837","282596","290839","299246","381261",
+                "307397","290840","282597","282598","282599","282600","282601",
+                "282602","282603"]
+};
+
+let settings = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "null") || JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
 
 const fmt  = n => new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}).format(n||0);
 const fmtN = n => new Intl.NumberFormat("en-US").format(n||0);
-const sortDesc = arr => [...arr].reverse();
 
-function pillClass(s){
-  const l=(s||"").toLowerCase();
-  if(l.includes("paid")||l.includes("complete")) return "pa";
-  if(l.includes("invoice")) return "pi";
-  if(l.includes("quote")) return "pq";
-  if(l.includes("production")||l.includes("progress")||l.includes("shipped")||l.includes("pickup")) return "pr";
-  return "pp";
+function showPage(page) {
+  currentPage = page;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const pageEl = document.getElementById('page-' + page);
+  if (pageEl) pageEl.classList.add('active');
+  event.target.classList.add('active');
+  if (page === 'settings' && allStatuses.length > 0) renderSettings();
 }
 
-function setProgress(pct, label){
-  const bar=document.getElementById("progress-bar");
-  if(bar) bar.style.width=Math.min(95,pct)+"%";
-  const lbl=document.getElementById("progress-label");
-  if(lbl) lbl.textContent=label;
+function setProgress(pct, label) {
+  const bar = document.getElementById("progress-bar");
+  if(bar) bar.style.width = Math.min(95,pct) + "%";
+  const lbl = document.getElementById("progress-label");
+  if(lbl) lbl.textContent = label;
 }
 
-async function fetchPage(type, cursor){
+async function fetchPage(type, cursor) {
   const after = cursor ? `,after:"${cursor}"` : "";
   const yearFilter = type === "invoices" ? `,inProductionAfter:"${new Date().getFullYear()}-01-01T00:00:00Z"` : "";
-  const q = `query{${type}(first:25,sortOn:VISUAL_ID${yearFilter}${after}){nodes{id visualId createdAt total amountOutstanding status{name}contact{fullName}}pageInfo{hasNextPage endCursor}}}`;
+  const q = `query{${type}(first:25,sortOn:VISUAL_ID${yearFilter}${after}){nodes{id visualId createdAt total amountOutstanding status{id name}contact{fullName}}pageInfo{hasNextPage endCursor}}}`;
   const res = await fetch("/api/printavo",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({query:q})});
   if(!res.ok) throw new Error("Proxy error: "+res.status);
   const json = await res.json();
@@ -180,7 +227,14 @@ async function fetchPage(type, cursor){
   return json.data[type];
 }
 
-async function fetchAll(type, onProgress){
+async function fetchStatuses() {
+  const q = `query{statuses(first:25){nodes{id name}}}`;
+  const res = await fetch("/api/printavo",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({query:q})});
+  const json = await res.json();
+  return (json.data&&json.data.statuses&&json.data.statuses.nodes)||[];
+}
+
+async function fetchAll(type, onProgress) {
   const nodes=[]; let cursor=null, page=0;
   do {
     page++;
@@ -193,121 +247,135 @@ async function fetchAll(type, onProgress){
   return nodes;
 }
 
-async function startLoad(forceRefresh){
+async function startLoad(forceRefresh) {
   if(isLoading) return;
-  isLoading=true;
-  document.getElementById("refresh-btn").disabled=true;
+  isLoading = true;
+  document.getElementById("refresh-btn").disabled = true;
 
-  if(!forceRefresh){
-    try{
-      const cached=JSON.parse(localStorage.getItem(CACHE_KEY)||"null");
-      if(cached&&cached.invoices&&cached.quotes){
+  if(!forceRefresh) {
+    try {
+      const cached = JSON.parse(localStorage.getItem(CACHE_KEY)||"null");
+      if(cached&&cached.invoices&&cached.quotes) {
         lastInvoices=cached.invoices; lastQuotes=cached.quotes;
-        render(lastInvoices,lastQuotes);
-        show("dashboard");hide("loading");hide("error-wrap");
+        allStatuses=cached.statuses||[];
+        hideLoading(); render();
         document.getElementById("last-updated").textContent="Cached · "+new Date(cached.timestamp).toLocaleTimeString();
         isLoading=false;
         document.getElementById("refresh-btn").disabled=false;
         setTimeout(()=>startLoad(true),REFRESH_MS);
         return;
       }
-    }catch(e){}
+    } catch(e){}
   }
 
-  show("loading");hide("dashboard");hide("error-wrap");
+  document.getElementById("loading").style.display="";
+  document.getElementById("page-dashboard").classList.remove("active");
+  document.getElementById("error-wrap").style.display="none";
   setProgress(5,"Starting...");
 
-  try{
-    setProgress(10,"Fetching invoices...");
-    const invoices=sortDesc(await fetchAll("invoices",(p,c)=>setProgress(10+p*4,`Fetching invoices: ${c} records (page ${p})...`)));
-    setProgress(60,"Fetching quotes...");
-    const quotes=sortDesc(await fetchAll("quotes",(p,c)=>setProgress(60+p*4,`Fetching quotes: ${c} records (page ${p})...`)));
+  try {
+    setProgress(8,"Fetching statuses...");
+    allStatuses = await fetchStatuses();
+
+    setProgress(12,"Fetching invoices...");
+    const invoices = await fetchAll("invoices",(p,c)=>setProgress(12+p*3,`Fetching invoices: ${c} records (page ${p})...`));
+
+    setProgress(65,"Fetching quotes...");
+    const quotes = await fetchAll("quotes",(p,c)=>setProgress(65+p*3,`Fetching quotes: ${c} records (page ${p})...`));
 
     lastInvoices=invoices; lastQuotes=quotes;
-    localStorage.setItem(CACHE_KEY,JSON.stringify({invoices,quotes,timestamp:Date.now()}));
+    localStorage.setItem(CACHE_KEY,JSON.stringify({invoices,quotes,statuses:allStatuses,timestamp:Date.now()}));
     document.getElementById("last-updated").textContent="Updated "+new Date().toLocaleTimeString();
-    render(invoices,quotes);
-    show("dashboard");hide("loading");hide("error-wrap");
+    hideLoading(); render();
     setTimeout(()=>startLoad(true),REFRESH_MS);
-  }catch(e){
+  } catch(e) {
     document.getElementById("error-msg").textContent=e.message;
-    if(lastInvoices.length>0){show("dashboard");hide("loading");hide("error-wrap");document.getElementById("last-updated").textContent="Refresh failed — cached data shown";}
-    else{show("error-wrap");hide("loading");hide("dashboard");}
-  }finally{
+    if(lastInvoices.length>0){hideLoading();render();document.getElementById("last-updated").textContent="Refresh failed — cached data shown";}
+    else{document.getElementById("error-wrap").style.display="";document.getElementById("loading").style.display="none";}
+  } finally {
     isLoading=false;
     document.getElementById("refresh-btn").disabled=false;
   }
 }
 
-function render(invoices, quotes){
-  const now=new Date();
-  const year=now.getFullYear();
-  const ys=new Date(year,0,1);
-  const ws=new Date(now); ws.setDate(now.getDate()-now.getDay());
-  const cm=now.getMonth();
+function hideLoading() {
+  document.getElementById("loading").style.display="none";
+  document.getElementById("page-dashboard").classList.add("active");
+}
 
-  const validQ=quotes.filter(q=>{const s=(q.status&&q.status.name||"").toLowerCase();return s&&!s.includes("ignore")&&!s.includes("blank");});
+function hasStatus(inv, settingKey) {
+  return !inv.status || settings[settingKey].length === 0 || settings[settingKey].includes(inv.status.id);
+}
 
-  // YTD filter — try both full date and year prefix matching
-  // All invoices are already filtered to this year via inProductionAfter
-  const ytdInv = invoices;
-  const ytdSales=ytdInv.reduce((s,i)=>s+(parseFloat(i.total)||0),0);
-  const outstanding=invoices.reduce((s,i)=>s+(parseFloat(i.amountOutstanding)||0),0);
-  const openOrders=invoices.filter(i=>{const s=(i.status&&i.status.name||"").toLowerCase();return !s.includes("paid")&&!s.includes("cancelled")&&!s.includes("complete");});
-  const qWeek=validQ.filter(q=>{const d=new Date(q.createdAt);return !isNaN(d.getTime())&&d>=ws;});
+function render() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const ws = new Date(now); ws.setDate(now.getDate()-now.getDay());
+  const cm = now.getMonth();
 
-  const monthly=Array(12).fill(0);
-  ytdInv.forEach(i=>{const d=new Date(i.createdAt);if(!isNaN(d.getTime())){const m=d.getMonth();monthly[m]+=(parseFloat(i.total)||0);}});
+  const salesInv    = lastInvoices.filter(i => hasStatus(i,'sales'));
+  const openInv     = lastInvoices.filter(i => hasStatus(i,'open'));
+  const outstandInv = lastInvoices.filter(i => hasStatus(i,'outstanding'));
+  const validQ      = lastQuotes.filter(q => {
+    const s=(q.status&&q.status.name||"").toLowerCase();
+    return s&&!s.includes("ignore")&&!s.includes("blank")&&!s.includes("demo")&&!s.includes("archived");
+  }).filter(q => hasStatus(q,'quotes'));
+
+  const ytdSales    = salesInv.reduce((s,i)=>s+(parseFloat(i.total)||0),0);
+  const outstanding = outstandInv.reduce((s,i)=>s+(parseFloat(i.amountOutstanding)||0),0);
+  const qWeek       = validQ.filter(q=>{const d=new Date(q.createdAt);return !isNaN(d.getTime())&&d>=ws;});
+
+  const monthly = Array(12).fill(0);
+  salesInv.forEach(i=>{
+    const d=new Date(i.createdAt);
+    if(!isNaN(d.getTime())&&d.getFullYear()===year){monthly[d.getMonth()]+=(parseFloat(i.total)||0);}
+  });
 
   const umap={};
-  ytdInv.forEach(i=>{const n=(i.contact&&i.contact.fullName)||"Unassigned";umap[n]=(umap[n]||0)+(parseFloat(i.total)||0);});
+  salesInv.forEach(i=>{const n=(i.contact&&i.contact.fullName)||"Unassigned";umap[n]=(umap[n]||0)+(parseFloat(i.total)||0);});
   const byUser=Object.entries(umap).sort((a,b)=>b[1]-a[1]).slice(0,10);
 
-  const conv=validQ.length>0?Math.min(100,(invoices.length/(invoices.length+validQ.length))*100):0;
+  const conv=validQ.length>0?Math.min(100,(lastInvoices.length/(lastInvoices.length+validQ.length))*100):0;
   const cmSales=monthly[cm], cmGoal=MONTHLY_GOALS[cm];
   const cmPct=cmGoal>0?Math.min(100,(cmSales/cmGoal)*100):0;
   const ytdGoal=MONTHLY_GOALS.slice(0,cm+1).reduce((s,g)=>s+g,0);
   const ytdPct=ytdGoal>0?Math.min(100,(ytdSales/ytdGoal)*100):0;
 
-  document.getElementById("dash-sub").textContent=`${fmtN(invoices.length)} orders this year · Last updated ${new Date().toLocaleTimeString()}`;
-  document.getElementById("orders-count").textContent=fmtN(invoices.length)+" total";
+  document.getElementById("dash-sub").textContent=`${fmtN(lastInvoices.length)} orders this year · Last updated ${new Date().toLocaleTimeString()}`;
+  document.getElementById("orders-count").textContent=fmtN(lastInvoices.length)+" total";
   document.getElementById("chart-year").textContent=year;
   document.getElementById("ytd-year").textContent=year;
   document.getElementById("cur-month-title").textContent=MONTHS[cm]+" vs Goal";
 
-  // KPIs
   document.getElementById("kpis").innerHTML=`
     <div class="kpi"><div><div class="kpi-lbl">YTD Sales</div><div class="kpi-val" style="color:#3D9A5C">${fmt(ytdSales)}</div><div class="kpi-s">${year} year to date</div></div><div class="kpi-ico ig">💰</div></div>
     <div class="kpi"><div><div class="kpi-lbl">Outstanding Invoices</div><div class="kpi-val" style="color:#DC2626">${fmt(outstanding)}</div><div class="kpi-s">Unpaid balance</div></div><div class="kpi-ico ir">📄</div></div>
-    <div class="kpi"><div><div class="kpi-lbl">Open Orders</div><div class="kpi-val">${fmtN(openOrders.length)}</div><div class="kpi-s">of ${fmtN(invoices.length)} total</div></div><div class="kpi-ico ia">📦</div></div>
+    <div class="kpi"><div><div class="kpi-lbl">Open Orders</div><div class="kpi-val">${fmtN(openInv.length)}</div><div class="kpi-s">Active in pipeline</div></div><div class="kpi-ico ia">📦</div></div>
     <div class="kpi"><div><div class="kpi-lbl">Quotes This Week</div><div class="kpi-val">${fmtN(qWeek.length)}</div><div class="kpi-s">${fmtN(validQ.length)} total on record</div></div><div class="kpi-ico ib">📝</div></div>
     <div class="kpi"><div><div class="kpi-lbl">Conversion Rate</div><div class="kpi-val">${conv.toFixed(1)}%</div><div class="kpi-s">Quotes to orders</div></div><div class="kpi-ico ig">📈</div></div>
   `;
 
-  // Ring chart — current month
-  const ringColor = cmPct>=100?"#3D9A5C":cmPct>=75?"#3D9A5C":cmPct>=50?"#D97706":"#DC2626";
-  const r=54, circ=2*Math.PI*r, dash=circ*(cmPct/100), gap=circ-dash;
+  // Ring
+  const ringColor=cmPct>=75?"#3D9A5C":cmPct>=50?"#D97706":"#DC2626";
+  const r=54,circ=2*Math.PI*r,dash=circ*(cmPct/100),gap=circ-dash;
   document.getElementById("ring-wrap").innerHTML=`
-    <svg class="ring-svg" width="140" height="140" viewBox="0 0 140 140">
+    <svg width="140" height="140" viewBox="0 0 140 140" style="flex-shrink:0">
       <circle cx="70" cy="70" r="${r}" fill="none" stroke="#F3F4F6" stroke-width="14"/>
       <circle cx="70" cy="70" r="${r}" fill="none" stroke="${ringColor}" stroke-width="14"
-        stroke-dasharray="${dash.toFixed(1)} ${gap.toFixed(1)}"
-        stroke-linecap="round" transform="rotate(-90 70 70)"
-        style="transition:stroke-dasharray .8s ease"/>
+        stroke-dasharray="${dash.toFixed(1)} ${gap.toFixed(1)}" stroke-linecap="round" transform="rotate(-90 70 70)"/>
       <text x="70" y="66" text-anchor="middle" font-size="18" font-weight="700" fill="#111827">${Math.round(cmPct)}%</text>
       <text x="70" y="84" text-anchor="middle" font-size="11" fill="#6B7280">of goal</text>
     </svg>
-    <div class="ring-info">
-      <div><div style="font-size:12px;color:#6B7280;margin-bottom:2px">Actual</div><div class="ring-val" style="color:${ringColor}">${fmt(cmSales)}</div></div>
-      <div><div style="font-size:12px;color:#6B7280;margin-bottom:2px">Goal</div><div style="font-size:18px;font-weight:600">${fmt(cmGoal)}</div></div>
-      <div style="font-size:12px;color:#6B7280">${fmt(cmGoal-cmSales)} remaining</div>
-    </div>
-  `;
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div><div style="font-size:12px;color:#6B7280;margin-bottom:2px">Actual</div><div style="font-size:28px;font-weight:700;color:${ringColor}">${fmt(cmSales)}</div></div>
+      <div><div style="font-size:12px;color:#6B7280;margin-bottom:2px">Goal</div><div style="font-size:20px;font-weight:600">${fmt(cmGoal)}</div></div>
+      <div style="font-size:12px;color:#6B7280">${fmt(Math.max(0,cmGoal-cmSales))} remaining</div>
+    </div>`;
 
-  // YTD progress bar
-  const ytdColor=ytdPct>=100?"#3D9A5C":ytdPct>=75?"#3D9A5C":ytdPct>=50?"#D97706":"#DC2626";
+  // YTD bar
+  const ytdColor=ytdPct>=75?"#3D9A5C":ytdPct>=50?"#D97706":"#DC2626";
   document.getElementById("ytd-progress").innerHTML=`
-    <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+    <div style="display:flex;justify-content:space-between;margin-bottom:12px">
       <div><div style="font-size:12px;color:#6B7280;margin-bottom:2px">YTD Actual</div><div style="font-size:24px;font-weight:700;color:${ytdColor}">${fmt(ytdSales)}</div></div>
       <div style="text-align:right"><div style="font-size:12px;color:#6B7280;margin-bottom:2px">YTD Goal</div><div style="font-size:24px;font-weight:700">${fmt(ytdGoal)}</div></div>
     </div>
@@ -316,50 +384,105 @@ function render(invoices, quotes){
     </div>
     <div style="display:flex;justify-content:space-between;font-size:12px;color:#6B7280">
       <span>${ytdPct.toFixed(1)}% attained through ${MONTHS[cm]}</span>
-      <span>${fmt(ytdGoal-ytdSales)} remaining</span>
-    </div>
-  `;
+      <span>${fmt(Math.max(0,ytdGoal-ytdSales))} remaining</span>
+    </div>`;
 
-  // Monthly progress bars
+  // Monthly grid
   document.getElementById("month-grid").innerHTML=MONTHS.slice(0,cm+1).map((m,i)=>{
-    const actual=monthly[i], goal=MONTHLY_GOALS[i];
+    const actual=monthly[i],goal=MONTHLY_GOALS[i];
     const pct=goal>0?Math.min(100,(actual/goal)*100):0;
-    const color=pct>=100?"#3D9A5C":pct>=75?"#3D9A5C":pct>=50?"#D97706":"#DC2626";
-    const isCurrentMonth=i===cm;
-    return`<div class="month-card" style="${isCurrentMonth?"background:#F9FFF9;border:1px solid #D1FAE5;border-radius:8px;padding:10px;margin:-2px":""}">
-      <div class="month-label">${m}${isCurrentMonth?" · Current":""}</div>
-      <div class="month-cur">${fmt(actual)}</div>
+    const color=pct>=75?"#3D9A5C":pct>=50?"#D97706":"#DC2626";
+    return`<div class="month-card${i===cm?" current":""}">
+      <div class="month-lbl">${m}${i===cm?" · Now":""}</div>
+      <div class="month-val">${fmt(actual)}</div>
       <div class="month-track"><div class="month-fill" style="width:${pct.toFixed(1)}%;background:${color}"></div></div>
-      <div class="month-vals"><span style="color:${color};font-weight:600">${Math.round(pct)}%</span><span>${fmt(goal)}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px">
+        <span class="month-pct" style="color:${color}">${Math.round(pct)}%</span>
+        <span style="color:#9CA3AF">${fmt(goal)}</span>
+      </div>
     </div>`;
   }).join("");
 
   // Sales by user
   document.getElementById("user-table").innerHTML=byUser.length
     ?byUser.map(([n,a])=>`<tr><td>${n}</td><td style="text-align:right;font-weight:600;color:#3D9A5C">${fmt(a)}</td></tr>`).join("")
-    :`<tr><td colspan="2" style="color:#9CA3AF;text-align:center;padding:20px">No YTD sales data yet</td></tr>`;
+    :`<tr><td colspan="2" style="color:#9CA3AF;text-align:center;padding:20px">No sales data — check status settings</td></tr>`;
 
+  // Quotes table
   document.getElementById("quotes-table").innerHTML=validQ.slice(0,10).length
     ?validQ.slice(0,10).map(q=>`<tr>
         <td style="color:#6B7280">${q.visualId||""}</td>
         <td>${(q.contact&&q.contact.fullName)||"—"}</td>
         <td style="text-align:right">${fmt(q.total)}</td>
-        <td><span class="pill ${pillClass(q.status&&q.status.name)}">${(q.status&&q.status.name)||"—"}</span></td>
+        <td><span class="pill">${(q.status&&q.status.name)||"—"}</span></td>
       </tr>`).join("")
-    :`<tr><td colspan="4" style="color:#9CA3AF;text-align:center;padding:20px">No quotes</td></tr>`;
+    :`<tr><td colspan="4" style="color:#9CA3AF;text-align:center;padding:20px">No quotes — check status settings</td></tr>`;
 
-  document.getElementById("orders-table").innerHTML=invoices.slice(0,20).map(o=>`<tr>
+  // Orders table
+  document.getElementById("orders-table").innerHTML=lastInvoices.slice(0,20).map(o=>`<tr>
     <td style="color:#6B7280">${o.visualId||""}</td>
     <td>${(o.contact&&o.contact.fullName)||"—"}</td>
     <td style="color:#6B7280;white-space:nowrap">${o.createdAt?new Date(o.createdAt).toLocaleDateString():"—"}</td>
     <td style="text-align:right;font-weight:600">${fmt(o.total)}</td>
     <td style="text-align:right;color:${parseFloat(o.amountOutstanding)>0?"#DC2626":"#3D9A5C"}">${fmt(o.amountOutstanding)}</td>
-    <td><span class="pill ${pillClass(o.status&&o.status.name)}">${(o.status&&o.status.name)||"—"}</span></td>
+    <td><span class="pill">${(o.status&&o.status.name)||"—"}</span></td>
   </tr>`).join("");
+
+  if(currentPage==='settings') renderSettings();
 }
 
-function show(id){document.getElementById(id).style.display="";}
-function hide(id){document.getElementById(id).style.display="none";}
+function renderSettings() {
+  const sections = [
+    {key:'sales',    title:'YTD Sales & Monthly Chart', desc:'Orders that count toward revenue figures'},
+    {key:'open',     title:'Open Orders',               desc:'Orders shown as active in the pipeline'},
+    {key:'quotes',   title:'Active Quotes',             desc:'Quotes shown in the quotes table and this week count'},
+    {key:'outstanding', title:'Outstanding Balance',    desc:'Orders included in the unpaid balance total'},
+  ];
+
+  document.getElementById("settings-grid").innerHTML=sections.map(sec=>`
+    <div class="settings-card">
+      <div class="settings-card-hd">
+        <h3>${sec.title}</h3>
+        <p>${sec.desc}</p>
+      </div>
+      <div class="status-list" id="list-${sec.key}"></div>
+      <div class="settings-actions">
+        <button class="btn btn-gray" onclick="selectAll('${sec.key}',true)">All</button>
+        <button class="btn btn-gray" onclick="selectAll('${sec.key}',false)">None</button>
+        <span class="save-toast" id="toast-${sec.key}">Saved ✓</span>
+      </div>
+    </div>
+  `).join("");
+
+  sections.forEach(sec=>{
+    const container=document.getElementById("list-"+sec.key);
+    container.innerHTML=allStatuses.map(s=>{
+      const checked=settings[sec.key].includes(s.id)?"checked":"";
+      return`<div class="status-item">
+        <input type="checkbox" id="${sec.key}-${s.id}" ${checked} onchange="toggleStatus('${sec.key}','${s.id}',this.checked)"/>
+        <label for="${sec.key}-${s.id}">${s.name}</label>
+      </div>`;
+    }).join("");
+  });
+}
+
+function toggleStatus(section, id, checked) {
+  if(checked) { if(!settings[section].includes(id)) settings[section].push(id); }
+  else { settings[section]=settings[section].filter(x=>x!==id); }
+  localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));
+  render();
+  const toast=document.getElementById("toast-"+section);
+  toast.style.opacity="1";
+  setTimeout(()=>toast.style.opacity="0",1500);
+}
+
+function selectAll(section, val) {
+  settings[section]=val?allStatuses.map(s=>s.id):[];
+  localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));
+  renderSettings();
+  render();
+}
+
 startLoad(false);
 </script>
 </body>
