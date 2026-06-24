@@ -7,9 +7,12 @@ export const config = {
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Headers", "*");
+  res.setHeader("Access-Control-Max-Age", "86400");
 
-  if (req.method === "OPTIONS") return res.status(200).end();
+  if (req.method === "OPTIONS") {
+    return res.status(204).end();
+  }
 
   const token = process.env.PRINTAVO_API_TOKEN;
   const email = process.env.PRINTAVO_EMAIL;
@@ -22,7 +25,12 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Missing PRINTAVO_API_TOKEN or PRINTAVO_EMAIL env vars" });
   }
 
-  const body = JSON.stringify(req.body || {});
+  let bodyStr;
+  try {
+    bodyStr = req.body ? JSON.stringify(req.body) : "{}";
+  } catch {
+    bodyStr = "{}";
+  }
 
   try {
     const printavoRes = await fetch("https://www.printavo.com/api/v2", {
@@ -32,12 +40,12 @@ export default async function handler(req, res) {
         "email": email,
         "token": token,
       },
-      body,
+      body: bodyStr,
     });
 
     const text = await printavoRes.text();
     res.setHeader("Content-Type", "application/json");
-    return res.status(printavoRes.status).send(text);
+    return res.status(200).send(text);
   } catch (err) {
     return res.status(500).json({ error: "Proxy error", detail: err.message });
   }
