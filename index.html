@@ -126,7 +126,7 @@ tr:hover td{background:#F9FAFB}
 
 <script>
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const GQL = `query{account{name}invoices(first:100,sortOn:CREATED_AT,direction:DESC){nodes{id visualId name total amountOutstanding createdAt status{name}contact{fullName}}}quotes(first:100,sortOn:CREATED_AT,direction:DESC){nodes{id visualId name total createdAt status{name}contact{fullName}}}}`;
+const GQL = `query{invoices(first:100){nodes{id visualId total amountOutstanding createdAt status{name}contact{fullName}}}quotes(first:100){nodes{id visualId total createdAt status{name}contact{fullName}}}}`;
 let goals = Array(12).fill(25000);
 let lastData = null;
 
@@ -184,7 +184,7 @@ function render(raw){
   const cmSales=monthly[cm], cmGoal=goals[cm];
   const pct=cmGoal>0?Math.min(100,(cmSales/cmGoal)*100).toFixed(0):0;
 
-  document.getElementById("shop-name").textContent=(raw.account&&raw.account.name)||"Your Shop";
+  document.getElementById("shop-name").textContent="P&M Apparel";
   document.getElementById("chart-year").textContent=now.getFullYear();
   document.getElementById("refresh-btn").style.display="";
 
@@ -216,7 +216,7 @@ function render(raw){
   // Quotes
   document.getElementById("quotes-table").innerHTML=quo.slice(0,8).map(q=>`<tr>
     <td style="color:#6B7280">${q.visualId||""}</td>
-    <td>${q.name||(q.contact&&q.contact.fullName)||"—"}</td>
+    <td>${(q.contact&&q.contact.fullName)||"—"}</td>
     <td style="text-align:right">${fmt(q.total)}</td>
     <td><span class="pill ${pillClass(q.status&&q.status.name)}">${(q.status&&q.status.name)||"Quote"}</span></td>
   </tr>`).join("");
@@ -224,7 +224,7 @@ function render(raw){
   // Orders
   document.getElementById("orders-table").innerHTML=inv.slice(0,10).map(o=>`<tr>
     <td style="color:#6B7280">${o.visualId||""}</td>
-    <td style="max-width:160px">${o.name||"—"}</td>
+    <td style="max-width:160px">${(o.contact&&o.contact.fullName)||"—"}</td>
     <td>${(o.contact&&o.contact.fullName)||"—"}</td>
     <td style="color:#6B7280;white-space:nowrap">${new Date(o.createdAt).toLocaleDateString()}</td>
     <td style="text-align:right;font-weight:600">${fmt(o.total)}</td>
