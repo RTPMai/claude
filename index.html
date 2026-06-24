@@ -62,29 +62,18 @@ tr:hover td{background:#F9FAFB}
 .progress-bar{height:100%;background:#3D9A5C;border-radius:99px;transition:width .3s ease}
 .progress-label{font-size:12px;color:#6B7280;text-align:center}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.fetch-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:#6B7280;background:#F3F4F6;padding:3px 8px;border-radius:99px}
-.fetch-dot{width:6px;height:6px;border-radius:50%;background:#3D9A5C}
-.fetch-dot.spinning{animation:spin .7s linear infinite;border:2px solid #E5E7EB;border-top-color:#3D9A5C;background:none}
 @media(max-width:700px){.two{grid-template-columns:1fr}.dash{padding:16px}.hdr{padding:0 16px}}
 </style>
 </head>
 <body>
-
 <div class="hdr">
   <div class="logo">
     <div class="logomark">P</div>
-    <div>
-      <div class="hdr-title">Printavo Reports</div>
-      <div class="hdr-sub">P&amp;M Apparel</div>
-    </div>
+    <div><div class="hdr-title">Printavo Reports</div><div class="hdr-sub">P&amp;M Apparel</div></div>
   </div>
   <div class="hdr-right">
     <div class="last-updated" id="last-updated"></div>
-    <div class="fetch-badge" id="fetch-badge" style="display:none">
-      <div class="fetch-dot spinning" id="fetch-dot"></div>
-      <span id="fetch-label">Loading...</span>
-    </div>
-    <button class="rbtn" id="refresh-btn" onclick="startLoad()" disabled>Refresh</button>
+    <button class="rbtn" id="refresh-btn" onclick="startLoad(true)" disabled>Refresh</button>
   </div>
 </div>
 
@@ -94,17 +83,14 @@ tr:hover td{background:#F9FAFB}
   <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:5%"></div></div>
   <div class="progress-label" id="progress-label">Fetching records...</div>
 </div>
-
 <div id="error-wrap" style="display:none" class="dash">
   <div class="err" id="error-msg"></div>
-  <button class="rbtn" onclick="startLoad()">Retry</button>
+  <button class="rbtn" onclick="startLoad(true)">Retry</button>
 </div>
-
 <div id="dashboard" style="display:none" class="dash">
   <h2>Dashboard</h2>
   <div class="dash-sub">Your shop performance overview</div>
   <div class="kpis" id="kpis"></div>
-
   <div class="card">
     <div class="card-hd"><h3>Sales by Month vs Goal</h3><span id="chart-year"></span></div>
     <div class="card-bd">
@@ -116,165 +102,168 @@ tr:hover td{background:#F9FAFB}
       </div>
     </div>
   </div>
-
   <div class="two">
     <div class="card">
       <div class="card-hd"><h3>YTD Sales by Contact</h3><span>Top 10</span></div>
       <div class="card-bd" style="padding:12px 20px">
-        <table><thead><tr><th>Contact</th><th style="text-align:right">Sales</th></tr></thead>
-        <tbody id="user-table"></tbody></table>
+        <table><thead><tr><th>Contact</th><th style="text-align:right">Sales</th></tr></thead><tbody id="user-table"></tbody></table>
       </div>
     </div>
     <div class="card">
       <div class="card-hd"><h3>Recent Quotes</h3><span>Last 10</span></div>
       <div class="card-bd" style="padding:12px 20px">
-        <table><thead><tr><th>#</th><th>Contact</th><th style="text-align:right">Total</th><th>Status</th></tr></thead>
-        <tbody id="quotes-table"></tbody></table>
+        <table><thead><tr><th>#</th><th>Contact</th><th style="text-align:right">Total</th><th>Status</th></tr></thead><tbody id="quotes-table"></tbody></table>
       </div>
     </div>
   </div>
-
   <div class="card">
     <div class="card-hd"><h3>Recent Orders</h3><span id="orders-count"></span></div>
     <div class="card-bd" style="padding:12px 20px;overflow-x:auto">
-      <table><thead><tr><th>#</th><th>Contact</th><th>Created</th><th style="text-align:right">Total</th><th style="text-align:right">Outstanding</th><th>Status</th></tr></thead>
-      <tbody id="orders-table"></tbody></table>
+      <table><thead><tr><th>#</th><th>Contact</th><th>Created</th><th style="text-align:right">Total</th><th style="text-align:right">Outstanding</th><th>Status</th></tr></thead><tbody id="orders-table"></tbody></table>
     </div>
   </div>
 </div>
 
 <script>
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const CACHE_KEY = "printavo_cache_v2";
-const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes
-let goals = JSON.parse(localStorage.getItem("printavo_goals") || "null") || Array(12).fill(260000);
+const CACHE_KEY = "printavo_data_v3";
+const GOALS_KEY = "printavo_goals_v1";
+const REFRESH_MS = 30 * 60 * 1000;
+let goals = JSON.parse(localStorage.getItem(GOALS_KEY) || "null") || Array(12).fill(260000);
 let isLoading = false;
+let lastInvoices = [], lastQuotes = [];
 
 const fmt  = n => new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}).format(n||0);
 const fmtN = n => new Intl.NumberFormat("en-US").format(n||0);
+const sortDesc = arr => [...arr].sort((a,b) => parseInt(b.visualId||0) - parseInt(a.visualId||0));
 
-function pillClass(s){
-  const l=(s||"").toLowerCase();
-  if(l.includes("approved")||l.includes("paid")||l.includes("complete")) return "pa";
+function pillClass(s) {
+  const l = (s||"").toLowerCase();
+  if(l.includes("paid")||l.includes("complete")) return "pa";
   if(l.includes("invoice")) return "pi";
   if(l.includes("quote")) return "pq";
   if(l.includes("production")||l.includes("progress")||l.includes("shipped")||l.includes("pickup")) return "pr";
   return "pp";
 }
 
-// Fetch a single page of invoices
+function setProgress(pct, label) {
+  const bar = document.getElementById("progress-bar");
+  if(bar) bar.style.width = Math.min(95, pct) + "%";
+  const lbl = document.getElementById("progress-label");
+  if(lbl) lbl.textContent = label;
+}
+
 async function fetchPage(type, cursor) {
-  const afterClause = cursor ? `,after:"${cursor}"` : "";
-  const sortClause = ",sortOn:VISUAL_ID";
-  const query = `query{${type}(first:25${sortClause}${afterClause}){nodes{id visualId createdAt total amountOutstanding status{name}contact{fullName}}pageInfo{hasNextPage endCursor}}}`;
-  const res = await fetch("/api/printavo",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({query})
+  const after = cursor ? `,after:"${cursor}"` : "";
+  const q = `query{${type}(first:25,sortOn:VISUAL_ID${after}){nodes{id visualId createdAt total amountOutstanding status{name}contact{fullName}}pageInfo{hasNextPage endCursor}}}`;
+  const res = await fetch("/api/printavo", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({query: q})
   });
-  if(!res.ok) throw new Error("Proxy returned "+res.status);
+  if(!res.ok) throw new Error("Proxy error: " + res.status);
   const json = await res.json();
   if(json.errors) throw new Error(json.errors.map(e=>e.message).join(", "));
+  if(!json.data || !json.data[type]) throw new Error("No " + type + " data returned");
   return json.data[type];
 }
 
-// Fetch ALL pages for a type
 async function fetchAll(type, onProgress) {
-  const allNodes = [];
-  let cursor = null;
-  let page = 0;
+  const nodes = [];
+  let cursor = null, page = 0;
   do {
     page++;
-    onProgress(page, allNodes.length);
+    if(onProgress) onProgress(page, nodes.length);
     const result = await fetchPage(type, cursor);
-    allNodes.push(...result.nodes);
+    nodes.push(...result.nodes);
     cursor = result.pageInfo.hasNextPage ? result.pageInfo.endCursor : null;
-    // Small delay to respect rate limits (10 req/5sec)
-    if(cursor) await new Promise(r => setTimeout(r, 600));
+    if(cursor) await new Promise(r => setTimeout(r, 700));
   } while(cursor);
-  return allNodes;
+  return nodes;
 }
 
-async function startLoad() {
+async function startLoad(forceRefresh) {
   if(isLoading) return;
   isLoading = true;
+  document.getElementById("refresh-btn").disabled = true;
 
-  // Show cached data immediately if available
-  const cached = localStorage.getItem(CACHE_KEY);
-  if(cached) {
+  // Load from cache first for instant display
+  if(!forceRefresh) {
     try {
-      const {invoices, quotes, timestamp} = JSON.parse(cached);
-      render(invoices, quotes);
-      show("dashboard"); hide("loading"); hide("error-wrap");
-      document.getElementById("last-updated").textContent = "Cached · " + new Date(timestamp).toLocaleTimeString();
-      // Show background refresh badge
-      document.getElementById("fetch-badge").style.display = "";
-      document.getElementById("fetch-label").textContent = "Refreshing...";
-      document.getElementById("refresh-btn").disabled = true;
+      const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
+      if(cached && cached.invoices && cached.quotes) {
+        lastInvoices = cached.invoices;
+        lastQuotes = cached.quotes;
+        render(lastInvoices, lastQuotes);
+        show("dashboard"); hide("loading"); hide("error-wrap");
+        document.getElementById("last-updated").textContent = "Cached · " + new Date(cached.timestamp).toLocaleTimeString();
+        isLoading = false;
+        document.getElementById("refresh-btn").disabled = false;
+        // Schedule background refresh
+        setTimeout(() => startLoad(true), REFRESH_MS);
+        return;
+      }
     } catch(e) {}
-  } else {
-    show("loading"); hide("dashboard"); hide("error-wrap");
   }
 
+  show("loading"); hide("dashboard"); hide("error-wrap");
+  setProgress(5, "Starting...");
+
   try {
-    let invoiceCount = 0, quoteCount = 0;
+    setProgress(10, "Fetching invoices...");
+    const invoices = sortDesc(await fetchAll("invoices", (p, c) => {
+      setProgress(10 + p * 5, `Fetching invoices: ${c} records (page ${p})...`);
+    }));
 
-    const updateProgress = (type, page, count) => {
-      const label = `Fetching ${type}: ${count} records (page ${page})...`;
-      document.getElementById("progress-label").textContent = label;
-      document.getElementById("fetch-label").textContent = label;
-      const pct = Math.min(90, 5 + page * 8);
-      const bar = document.getElementById("progress-bar");
-      if(bar) bar.style.width = pct + "%";
-    };
+    setProgress(55, "Fetching quotes...");
+    const quotes = sortDesc(await fetchAll("quotes", (p, c) => {
+      setProgress(55 + p * 5, `Fetching quotes: ${c} records (page ${p})...`);
+    }));
 
-    // Sort newest first after fetching all pages
-    const sortByVisualId = arr => arr.sort((a,b) => parseInt(b.visualId||0) - parseInt(a.visualId||0));
-    const [invoices, quotes] = await Promise.all([
-      fetchAll("invoices", (p,c) => { invoiceCount=c; updateProgress("invoices", p, c); }).then(sortByVisualId),
-      fetchAll("quotes",   (p,c) => { quoteCount=c;   updateProgress("quotes", p, c); }).then(sortByVisualId)
-    ]);
+    setProgress(100, "Done!");
+    lastInvoices = invoices;
+    lastQuotes = quotes;
 
-    // Cache results
     localStorage.setItem(CACHE_KEY, JSON.stringify({invoices, quotes, timestamp: Date.now()}));
     document.getElementById("last-updated").textContent = "Updated " + new Date().toLocaleTimeString();
 
     render(invoices, quotes);
     show("dashboard"); hide("loading"); hide("error-wrap");
+    setTimeout(() => startLoad(true), REFRESH_MS);
 
   } catch(e) {
-    if(!document.getElementById("dashboard").style.display || document.getElementById("dashboard").style.display === "none") {
-      document.getElementById("error-msg").textContent = e.message;
-      show("error-wrap"); hide("loading");
+    document.getElementById("error-msg").textContent = e.message;
+    if(lastInvoices.length > 0) {
+      show("dashboard"); hide("loading"); hide("error-wrap");
+      document.getElementById("last-updated").textContent = "Refresh failed — showing cached data";
     } else {
-      document.getElementById("last-updated").textContent = "Refresh failed — " + e.message.slice(0,40);
+      show("error-wrap"); hide("loading"); hide("dashboard");
     }
   } finally {
     isLoading = false;
-    document.getElementById("fetch-badge").style.display = "none";
     document.getElementById("refresh-btn").disabled = false;
-    // Schedule next auto-refresh
-    setTimeout(startLoad, REFRESH_INTERVAL);
   }
 }
 
 function render(invoices, quotes) {
   const now = new Date();
-  const ys = new Date(now.getFullYear(), 0, 1);
-  const ws = new Date(now); ws.setDate(now.getDate() - now.getDay());
-  const cm = now.getMonth();
+  const ys  = new Date(now.getFullYear(), 0, 1);
+  const ws  = new Date(now); ws.setDate(now.getDate() - now.getDay());
+  const cm  = now.getMonth();
 
-  // Filter valid quotes (exclude blank/ignore)
-  const validQuotes = quotes.filter(q => {
+  const validQ = quotes.filter(q => {
     const s = (q.status && q.status.name || "").toLowerCase();
-    return !s.includes("ignore") && !s.includes("blank") && s !== "";
+    return s && !s.includes("ignore") && !s.includes("blank");
   });
 
-  const ytdInv = invoices.filter(i => new Date(i.createdAt) >= ys);
-  const ytdSales = ytdInv.reduce((s,i) => s + (parseFloat(i.total)||0), 0);
-  const outstanding = invoices.reduce((s,i) => s + (parseFloat(i.amountOutstanding)||0), 0);
-  const openOrders = invoices.filter(i => !["paid","cancelled","complete"].some(x => (i.status&&i.status.name||"").toLowerCase().includes(x)));
-  const qWeek = validQuotes.filter(q => new Date(q.createdAt) >= ws);
+  const ytdInv     = invoices.filter(i => new Date(i.createdAt) >= ys);
+  const ytdSales   = ytdInv.reduce((s,i) => s + (parseFloat(i.total)||0), 0);
+  const outstanding= invoices.reduce((s,i) => s + (parseFloat(i.amountOutstanding)||0), 0);
+  const openOrders = invoices.filter(i => {
+    const s = (i.status && i.status.name || "").toLowerCase();
+    return !s.includes("paid") && !s.includes("cancelled") && !s.includes("complete");
+  });
+  const qWeek = validQ.filter(q => new Date(q.createdAt) >= ws);
 
   const monthly = Array(12).fill(0);
   ytdInv.forEach(i => { const m = new Date(i.createdAt).getMonth(); monthly[m] += (parseFloat(i.total)||0); });
@@ -283,24 +272,23 @@ function render(invoices, quotes) {
   ytdInv.forEach(i => { const n = (i.contact&&i.contact.fullName)||"Unassigned"; umap[n] = (umap[n]||0) + (parseFloat(i.total)||0); });
   const byUser = Object.entries(umap).sort((a,b) => b[1]-a[1]).slice(0,10);
 
-  const conv = validQuotes.length > 0 ? Math.min(100, (invoices.length/(invoices.length+validQuotes.length))*100) : 0;
-  const cmSales = monthly[cm], cmGoal = goals[cm];
-  const pct = cmGoal > 0 ? Math.min(100,(cmSales/cmGoal)*100).toFixed(0) : 0;
+  const conv   = validQ.length > 0 ? Math.min(100, (invoices.length/(invoices.length+validQ.length))*100) : 0;
+  const cmSales= monthly[cm], cmGoal = goals[cm];
+  const pct    = cmGoal > 0 ? Math.min(100,(cmSales/cmGoal)*100).toFixed(0) : 0;
 
   document.getElementById("chart-year").textContent = now.getFullYear();
-  document.getElementById("orders-count").textContent = `${fmtN(invoices.length)} total`;
+  document.getElementById("orders-count").textContent = fmtN(invoices.length) + " total";
 
-  // KPIs
   document.getElementById("kpis").innerHTML = `
     <div class="kpi"><div><div class="kpi-lbl">YTD Sales</div><div class="kpi-val" style="color:#3D9A5C">${fmt(ytdSales)}</div><div class="kpi-s">${now.getFullYear()} year to date</div></div><div class="kpi-ico ig">💰</div></div>
     <div class="kpi"><div><div class="kpi-lbl">Outstanding Invoices</div><div class="kpi-val" style="color:#DC2626">${fmt(outstanding)}</div><div class="kpi-s">Unpaid balance</div></div><div class="kpi-ico ir">📄</div></div>
     <div class="kpi"><div><div class="kpi-lbl">Open Orders</div><div class="kpi-val">${fmtN(openOrders.length)}</div><div class="kpi-s">of ${fmtN(invoices.length)} total</div></div><div class="kpi-ico ia">📦</div></div>
-    <div class="kpi"><div><div class="kpi-lbl">Quotes This Week</div><div class="kpi-val">${fmtN(qWeek.length)}</div><div class="kpi-s">${fmtN(validQuotes.length)} total on record</div></div><div class="kpi-ico ib">📝</div></div>
+    <div class="kpi"><div><div class="kpi-lbl">Quotes This Week</div><div class="kpi-val">${fmtN(qWeek.length)}</div><div class="kpi-s">${fmtN(validQ.length)} total on record</div></div><div class="kpi-ico ib">📝</div></div>
     <div class="kpi"><div><div class="kpi-lbl">Conversion Rate</div><div class="kpi-val">${conv.toFixed(1)}%</div><div class="kpi-s">Quotes to orders</div></div><div class="kpi-ico ig">📈</div></div>
     <div class="kpi"><div><div class="kpi-lbl">This Month vs Goal</div><div class="kpi-val" style="color:${cmSales>=cmGoal?"#3D9A5C":"#D97706"}">${fmt(cmSales)}</div><div class="kpi-s">Goal: ${fmt(cmGoal)} — ${pct}% attained</div></div><div class="kpi-ico ia">🎯</div></div>
   `;
 
-  // Goals row
+  // Goals inputs
   const gr = document.getElementById("goals-row");
   gr.innerHTML = '<span style="font-size:12px;color:#6B7280;align-self:center;white-space:nowrap">Monthly goals ($):</span>';
   MONTHS.forEach((m,i) => {
@@ -308,33 +296,27 @@ function render(invoices, quotes) {
     d.innerHTML = `<label>${m}</label><input type="number" value="${goals[i]}" data-idx="${i}"/>`;
     d.querySelector("input").addEventListener("change", e => {
       goals[parseInt(e.target.dataset.idx)] = parseFloat(e.target.value)||0;
-      localStorage.setItem("printavo_goals", JSON.stringify(goals));
-      renderChart(monthly, cm);
-      // Re-render KPIs with new goal
-      render(invoices, quotes);
+      localStorage.setItem(GOALS_KEY, JSON.stringify(goals));
+      render(lastInvoices, lastQuotes);
     });
     gr.appendChild(d);
   });
 
   renderChart(monthly, cm);
 
-  // Sales by user
   document.getElementById("user-table").innerHTML = byUser.length
     ? byUser.map(([n,a]) => `<tr><td>${n}</td><td style="text-align:right;font-weight:600;color:#3D9A5C">${fmt(a)}</td></tr>`).join("")
-    : `<tr><td colspan="2" style="color:#9CA3AF;text-align:center;padding:20px">No YTD sales data</td></tr>`;
+    : `<tr><td colspan="2" style="color:#9CA3AF;text-align:center;padding:20px">No YTD sales</td></tr>`;
 
-  // Recent quotes
-  const recentQ = validQuotes.slice(0,10);
-  document.getElementById("quotes-table").innerHTML = recentQ.length
-    ? recentQ.map(q => `<tr>
+  document.getElementById("quotes-table").innerHTML = validQ.slice(0,10).length
+    ? validQ.slice(0,10).map(q => `<tr>
         <td style="color:#6B7280">${q.visualId||""}</td>
         <td>${(q.contact&&q.contact.fullName)||"—"}</td>
         <td style="text-align:right">${fmt(q.total)}</td>
         <td><span class="pill ${pillClass(q.status&&q.status.name)}">${(q.status&&q.status.name)||"—"}</span></td>
       </tr>`).join("")
-    : `<tr><td colspan="4" style="color:#9CA3AF;text-align:center;padding:20px">No quotes found</td></tr>`;
+    : `<tr><td colspan="4" style="color:#9CA3AF;text-align:center;padding:20px">No quotes</td></tr>`;
 
-  // Recent orders
   document.getElementById("orders-table").innerHTML = invoices.slice(0,20).map(o => `<tr>
     <td style="color:#6B7280">${o.visualId||""}</td>
     <td>${(o.contact&&o.contact.fullName)||"—"}</td>
@@ -360,8 +342,7 @@ function renderChart(monthly, cm) {
 function show(id){document.getElementById(id).style.display="";}
 function hide(id){document.getElementById(id).style.display="none";}
 
-// Kick off
-startLoad();
+startLoad(false);
 </script>
 </body>
 </html>
