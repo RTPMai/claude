@@ -170,7 +170,8 @@ function setProgress(pct, label){
 
 async function fetchPage(type, cursor){
   const after = cursor ? `,after:"${cursor}"` : "";
-  const q = `query{${type}(first:25,sortOn:VISUAL_ID${after}){nodes{id visualId createdAt total amountOutstanding status{name}contact{fullName}}pageInfo{hasNextPage endCursor}}}`;
+  const yearFilter = type === "invoices" ? `,inProductionAfter:"${new Date().getFullYear()}-01-01T00:00:00Z"` : "";
+  const q = `query{${type}(first:25,sortOn:VISUAL_ID${yearFilter}${after}){nodes{id visualId createdAt total amountOutstanding status{name}contact{fullName}}pageInfo{hasNextPage endCursor}}}`;
   const res = await fetch("/api/printavo",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({query:q})});
   if(!res.ok) throw new Error("Proxy error: "+res.status);
   const json = await res.json();
@@ -245,22 +246,11 @@ function render(invoices, quotes){
   const ws=new Date(now); ws.setDate(now.getDate()-now.getDay());
   const cm=now.getMonth();
 
-  // Debug: log date range of invoices to console
-  if(invoices.length>0){
-    const dates=invoices.map(i=>i.createdAt).filter(Boolean).sort();
-    console.log("Invoice date range:",dates[0],"to",dates[dates.length-1]);
-  }
-
   const validQ=quotes.filter(q=>{const s=(q.status&&q.status.name||"").toLowerCase();return s&&!s.includes("ignore")&&!s.includes("blank");});
 
   // YTD filter — try both full date and year prefix matching
-  const ytdInv=invoices.filter(i=>{
-    if(!i.createdAt) return false;
-    const d=new Date(i.createdAt);
-    if(!isNaN(d.getTime())) return d>=ys;
-    return i.createdAt.startsWith(year+"");
-  });
-
+  // All invoices are already filtered to this year via inProductionAfter
+  const ytdInv = invoices;
   const ytdSales=ytdInv.reduce((s,i)=>s+(parseFloat(i.total)||0),0);
   const outstanding=invoices.reduce((s,i)=>s+(parseFloat(i.amountOutstanding)||0),0);
   const openOrders=invoices.filter(i=>{const s=(i.status&&i.status.name||"").toLowerCase();return !s.includes("paid")&&!s.includes("cancelled")&&!s.includes("complete");});
@@ -279,7 +269,7 @@ function render(invoices, quotes){
   const ytdGoal=MONTHLY_GOALS.slice(0,cm+1).reduce((s,g)=>s+g,0);
   const ytdPct=ytdGoal>0?Math.min(100,(ytdSales/ytdGoal)*100):0;
 
-  document.getElementById("dash-sub").textContent=`${fmtN(invoices.length)} total orders · ${fmtN(ytdInv.length)} this year · Last updated ${new Date().toLocaleTimeString()}`;
+  document.getElementById("dash-sub").textContent=`${fmtN(invoices.length)} orders this year · Last updated ${new Date().toLocaleTimeString()}`;
   document.getElementById("orders-count").textContent=fmtN(invoices.length)+" total";
   document.getElementById("chart-year").textContent=year;
   document.getElementById("ytd-year").textContent=year;
