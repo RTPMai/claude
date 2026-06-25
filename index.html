@@ -19,11 +19,9 @@ body{background:#F4F6F8;color:#111827;font-family:'Inter',sans-serif;font-size:1
 .btn-gray{background:#F3F4F6;color:#374151;border:1px solid #E5E7EB}.btn-gray:hover{background:#E5E7EB}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .last-updated{font-size:11px;color:#9CA3AF}
-/* Nav tabs */
 .nav{display:flex;gap:2px;background:#F3F4F6;border-radius:8px;padding:3px}
-.nav-btn{border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;background:transparent;color:#6B7280;transition:all .15s}
+.nav-btn{border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;background:transparent;color:#6B7280}
 .nav-btn.active{background:#fff;color:#111827;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-/* Pages */
 .page{display:none}.page.active{display:block}
 .dash{padding:28px 32px}
 .section-title{font-size:22px;font-weight:700;margin-bottom:4px}
@@ -45,7 +43,6 @@ th{text-align:left;font-size:11px;letter-spacing:.4px;text-transform:uppercase;c
 td{padding:10px 12px 10px 0;border-top:1px solid #E5E7EB;color:#111827}
 tr:hover td{background:#F9FAFB}
 .pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;background:#F3F4F6;color:#374151}
-/* Ring + progress */
 .two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .ring-wrap{display:flex;align-items:center;gap:28px;padding:4px 0}
 .month-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
@@ -55,21 +52,19 @@ tr:hover td{background:#F9FAFB}
 .month-val{font-size:15px;font-weight:700;color:#111827}
 .month-track{height:8px;background:#F3F4F6;border-radius:99px;overflow:hidden}
 .month-fill{height:100%;border-radius:99px;transition:width .6s ease}
-.month-pct{font-size:11px;font-weight:600}
 /* Settings */
 .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .settings-card{background:#fff;border:1px solid #E5E7EB;border-radius:10px;overflow:hidden}
 .settings-card-hd{padding:14px 20px;border-bottom:1px solid #E5E7EB;background:#F9FAFB}
 .settings-card-hd h3{font-size:14px;font-weight:600;margin-bottom:2px}
 .settings-card-hd p{font-size:12px;color:#6B7280}
-.status-list{padding:12px 16px;display:flex;flex-direction:column;gap:2px;max-height:400px;overflow-y:auto}
-.status-item{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:6px;cursor:pointer;transition:background .1s}
+.status-list{padding:8px 12px;display:flex;flex-direction:column;gap:1px;max-height:380px;overflow-y:auto}
+.status-item{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:6px;cursor:pointer}
 .status-item:hover{background:#F9FAFB}
 .status-item input[type=checkbox]{width:15px;height:15px;accent-color:#3D9A5C;cursor:pointer;flex-shrink:0}
-.status-item label{cursor:pointer;font-size:13px;color:#374151;flex:1}
-.settings-actions{padding:16px 20px;border-top:1px solid #E5E7EB;display:flex;gap:10px;align-items:center}
+.status-item label{cursor:pointer;font-size:13px;color:#374151;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.settings-actions{padding:12px 16px;border-top:1px solid #E5E7EB;display:flex;gap:8px;align-items:center}
 .save-toast{font-size:12px;color:#3D9A5C;font-weight:500;opacity:0;transition:opacity .3s}
-/* Loading */
 .spin-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:80px 32px}
 .spinner{width:32px;height:32px;border:3px solid #E5E7EB;border-top-color:#3D9A5C;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -82,7 +77,6 @@ tr:hover td{background:#F9FAFB}
 </style>
 </head>
 <body>
-
 <div class="hdr">
   <div class="logo">
     <div class="logomark">P</div>
@@ -91,29 +85,25 @@ tr:hover td{background:#F9FAFB}
   <div class="hdr-right">
     <div class="last-updated" id="last-updated"></div>
     <div class="nav">
-      <button class="nav-btn active" onclick="showPage('dashboard')">Dashboard</button>
-      <button class="nav-btn" onclick="showPage('settings')">Settings</button>
+      <button class="nav-btn active" id="nav-dashboard" onclick="showPage('dashboard',this)">Dashboard</button>
+      <button class="nav-btn" id="nav-settings" onclick="showPage('settings',this)">Settings</button>
     </div>
     <button class="btn btn-green" id="refresh-btn" onclick="startLoad(true)" disabled>Refresh</button>
   </div>
 </div>
 
-<!-- Loading -->
 <div id="loading" class="spin-wrap">
   <div class="spinner"></div>
   <div style="font-size:14px;font-weight:600;color:#111827">Loading your Printavo data</div>
   <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:5%"></div></div>
   <div class="progress-label" id="progress-label">Fetching records...</div>
 </div>
-
-<!-- Error -->
 <div id="error-wrap" style="display:none" class="dash">
   <div class="err" id="error-msg"></div>
   <button class="btn btn-green" onclick="startLoad(true)">Retry</button>
 </div>
 
-<!-- Dashboard page -->
-<div id="page-dashboard" class="page active">
+<div id="page-dashboard" class="page">
   <div class="dash">
     <div class="section-title">Dashboard</div>
     <div class="section-sub" id="dash-sub">Your shop performance overview</div>
@@ -155,93 +145,70 @@ tr:hover td{background:#F9FAFB}
   </div>
 </div>
 
-<!-- Settings page -->
 <div id="page-settings" class="page">
   <div class="dash">
     <div class="section-title">Settings</div>
-    <div class="section-sub">Choose which statuses appear in each section of the dashboard. Changes are saved automatically.</div>
+    <div class="section-sub">Choose which statuses are included in each report section. Changes save automatically and update the dashboard instantly.</div>
     <div class="settings-grid" id="settings-grid"></div>
   </div>
 </div>
 
 <script>
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const CACHE_KEY = "printavo_data_v5";
-const SETTINGS_KEY = "printavo_settings_v1";
+const CACHE_KEY = "printavo_data_v6";
+const SETTINGS_KEY = "printavo_settings_v2";
 const REFRESH_MS = 30 * 60 * 1000;
 const MONTHLY_GOALS = [260000,260000,260000,260000,260000,260000,260000,260000,260000,260000,260000,260000];
 
 let isLoading = false;
 let lastInvoices = [], lastQuotes = [], allStatuses = [];
-let currentPage = 'dashboard';
-
-// Default settings — which status IDs count for each report section
-const DEFAULT_SETTINGS = {
-  // Sales / YTD — orders that represent real revenue
-  sales: ["287234","290837","282596","290839","299246","381261","307397","290840",
-          "282597","282598","282599","282600","282601","282602","282603","282604",
-          "282605","282606","282607","282608","461543","461544","461545","461546",
-          "461547","461548","461549","461550"],
-  // Open orders — in active production pipeline
-  open: ["287234","290837","282596","290839","299246","381261","307397","290840",
-         "282597","282598","282599","282600","282601","282602","282603"],
-  // Quotes — active quote statuses only
-  quotes: ["282593","282594","287230","287231","287232","454823","454824","282595","287234"],
-  // Outstanding — unpaid
-  outstanding: ["282595","287234","290837","282596","290839","299246","381261",
-                "307397","290840","282597","282598","282599","282600","282601",
-                "282602","282603"]
-};
-
-let settings = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "null") || JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+let settings = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "null") || {sales:[],open:[],quotes:[],outstanding:[]};
+// Empty array = all statuses included (no filter)
 
 const fmt  = n => new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}).format(n||0);
 const fmtN = n => new Intl.NumberFormat("en-US").format(n||0);
 
-function showPage(page) {
-  currentPage = page;
+function showPage(page, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  const pageEl = document.getElementById('page-' + page);
-  if (pageEl) pageEl.classList.add('active');
-  event.target.classList.add('active');
-  if (page === 'settings' && allStatuses.length > 0) renderSettings();
+  document.getElementById('page-'+page).classList.add('active');
+  btn.classList.add('active');
+  if(page==='settings') renderSettings();
 }
 
 function setProgress(pct, label) {
-  const bar = document.getElementById("progress-bar");
-  if(bar) bar.style.width = Math.min(95,pct) + "%";
-  const lbl = document.getElementById("progress-label");
-  if(lbl) lbl.textContent = label;
+  const bar=document.getElementById("progress-bar"); if(bar) bar.style.width=Math.min(95,pct)+"%";
+  const lbl=document.getElementById("progress-label"); if(lbl) lbl.textContent=label;
 }
 
-async function fetchPage(type, cursor) {
-  const after = cursor ? `,after:"${cursor}"` : "";
-  const yearFilter = type === "invoices" ? `,inProductionAfter:"${new Date().getFullYear()}-01-01T00:00:00Z"` : "";
-  const q = `query{${type}(first:25,sortOn:VISUAL_ID${yearFilter}${after}){nodes{id visualId createdAt total amountOutstanding status{id name}contact{fullName}}pageInfo{hasNextPage endCursor}}}`;
-  const res = await fetch("/api/printavo",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({query:q})});
+async function gql(query) {
+  const res = await fetch("/api/printavo",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({query})});
   if(!res.ok) throw new Error("Proxy error: "+res.status);
   const json = await res.json();
   if(json.errors) throw new Error(json.errors.map(e=>e.message).join(", "));
-  if(!json.data||!json.data[type]) throw new Error("No "+type+" data returned");
-  return json.data[type];
+  return json.data;
 }
 
-async function fetchStatuses() {
-  const q = `query{statuses(first:25){nodes{id name}}}`;
-  const res = await fetch("/api/printavo",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({query:q})});
-  const json = await res.json();
-  return (json.data&&json.data.statuses&&json.data.statuses.nodes)||[];
+async function fetchAllStatuses() {
+  const nodes = []; let cursor = null;
+  do {
+    const after = cursor ? `after:"${cursor}",` : "";
+    const data = await gql(`query{statuses(${after}first:25){nodes{id name}pageInfo{hasNextPage endCursor}}}`);
+    nodes.push(...data.statuses.nodes);
+    cursor = data.statuses.pageInfo.hasNextPage ? data.statuses.pageInfo.endCursor : null;
+    if(cursor) await new Promise(r=>setTimeout(r,300));
+  } while(cursor);
+  return nodes;
 }
 
-async function fetchAll(type, onProgress) {
+async function fetchAllRecords(type, onProgress) {
   const nodes=[]; let cursor=null, page=0;
   do {
-    page++;
-    if(onProgress) onProgress(page, nodes.length);
-    const result = await fetchPage(type, cursor);
-    nodes.push(...result.nodes);
-    cursor = result.pageInfo.hasNextPage ? result.pageInfo.endCursor : null;
+    page++; if(onProgress) onProgress(page, nodes.length);
+    const after = cursor ? `,after:"${cursor}"` : "";
+    const data = await gql(`query{${type}(first:25,sortOn:VISUAL_ID${after}){nodes{id visualId createdAt total amountOutstanding status{id name}contact{fullName}}pageInfo{hasNextPage endCursor}}}`);
+    nodes.push(...data[type].nodes);
+    cursor = data[type].pageInfo.hasNextPage ? data[type].pageInfo.endCursor : null;
     if(cursor) await new Promise(r=>setTimeout(r,700));
   } while(cursor);
   return nodes;
@@ -249,19 +216,19 @@ async function fetchAll(type, onProgress) {
 
 async function startLoad(forceRefresh) {
   if(isLoading) return;
-  isLoading = true;
-  document.getElementById("refresh-btn").disabled = true;
+  isLoading=true;
+  document.getElementById("refresh-btn").disabled=true;
 
   if(!forceRefresh) {
     try {
-      const cached = JSON.parse(localStorage.getItem(CACHE_KEY)||"null");
-      if(cached&&cached.invoices&&cached.quotes) {
-        lastInvoices=cached.invoices; lastQuotes=cached.quotes;
-        allStatuses=cached.statuses||[];
+      const cached=JSON.parse(localStorage.getItem(CACHE_KEY)||"null");
+      if(cached&&cached.invoices&&cached.quotes&&cached.statuses) {
+        lastInvoices=cached.invoices; lastQuotes=cached.quotes; allStatuses=cached.statuses;
+        // Init settings with all statuses selected if first time
+        initSettings();
         hideLoading(); render();
         document.getElementById("last-updated").textContent="Cached · "+new Date(cached.timestamp).toLocaleTimeString();
-        isLoading=false;
-        document.getElementById("refresh-btn").disabled=false;
+        isLoading=false; document.getElementById("refresh-btn").disabled=false;
         setTimeout(()=>startLoad(true),REFRESH_MS);
         return;
       }
@@ -275,15 +242,16 @@ async function startLoad(forceRefresh) {
 
   try {
     setProgress(8,"Fetching statuses...");
-    allStatuses = await fetchStatuses();
+    allStatuses = await fetchAllStatuses();
 
-    setProgress(12,"Fetching invoices...");
-    const invoices = await fetchAll("invoices",(p,c)=>setProgress(12+p*3,`Fetching invoices: ${c} records (page ${p})...`));
+    setProgress(15,"Fetching invoices...");
+    const invoices = await fetchAllRecords("invoices",(p,c)=>setProgress(15+p*2,`Fetching invoices: ${c} records (page ${p})...`));
 
     setProgress(65,"Fetching quotes...");
-    const quotes = await fetchAll("quotes",(p,c)=>setProgress(65+p*3,`Fetching quotes: ${c} records (page ${p})...`));
+    const quotes = await fetchAllRecords("quotes",(p,c)=>setProgress(65+p*2,`Fetching quotes: ${c} records (page ${p})...`));
 
     lastInvoices=invoices; lastQuotes=quotes;
+    initSettings();
     localStorage.setItem(CACHE_KEY,JSON.stringify({invoices,quotes,statuses:allStatuses,timestamp:Date.now()}));
     document.getElementById("last-updated").textContent="Updated "+new Date().toLocaleTimeString();
     hideLoading(); render();
@@ -293,9 +261,17 @@ async function startLoad(forceRefresh) {
     if(lastInvoices.length>0){hideLoading();render();document.getElementById("last-updated").textContent="Refresh failed — cached data shown";}
     else{document.getElementById("error-wrap").style.display="";document.getElementById("loading").style.display="none";}
   } finally {
-    isLoading=false;
-    document.getElementById("refresh-btn").disabled=false;
+    isLoading=false; document.getElementById("refresh-btn").disabled=false;
   }
+}
+
+function initSettings() {
+  // If settings are empty (first load), select ALL statuses by default
+  const allIds = allStatuses.map(s=>s.id);
+  ['sales','open','quotes','outstanding'].forEach(key=>{
+    if(!settings[key]||settings[key].length===0) settings[key]=[...allIds];
+  });
+  localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));
 }
 
 function hideLoading() {
@@ -303,45 +279,39 @@ function hideLoading() {
   document.getElementById("page-dashboard").classList.add("active");
 }
 
-function hasStatus(inv, settingKey) {
-  return !inv.status || settings[settingKey].length === 0 || settings[settingKey].includes(inv.status.id);
+function included(record, key) {
+  if(!settings[key]||settings[key].length===0) return true;
+  const id = record.status&&record.status.id;
+  return !id || settings[key].includes(id);
 }
 
 function render() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const ws = new Date(now); ws.setDate(now.getDate()-now.getDay());
-  const cm = now.getMonth();
+  const now=new Date(), year=now.getFullYear(), cm=now.getMonth();
+  const ys=new Date(year,0,1);
+  const ws=new Date(now); ws.setDate(now.getDate()-now.getDay());
 
-  const salesInv    = lastInvoices.filter(i => hasStatus(i,'sales'));
-  const openInv     = lastInvoices.filter(i => hasStatus(i,'open'));
-  const outstandInv = lastInvoices.filter(i => hasStatus(i,'outstanding'));
-  const validQ      = lastQuotes.filter(q => {
-    const s=(q.status&&q.status.name||"").toLowerCase();
-    return s&&!s.includes("ignore")&&!s.includes("blank")&&!s.includes("demo")&&!s.includes("archived");
-  }).filter(q => hasStatus(q,'quotes'));
+  const salesInv    = lastInvoices.filter(i=>included(i,'sales')&&new Date(i.createdAt)>=ys);
+  const openInv     = lastInvoices.filter(i=>included(i,'open'));
+  const outstandInv = lastInvoices.filter(i=>included(i,'outstanding'));
+  const quoteRecs   = lastQuotes.filter(q=>included(q,'quotes'));
 
   const ytdSales    = salesInv.reduce((s,i)=>s+(parseFloat(i.total)||0),0);
   const outstanding = outstandInv.reduce((s,i)=>s+(parseFloat(i.amountOutstanding)||0),0);
-  const qWeek       = validQ.filter(q=>{const d=new Date(q.createdAt);return !isNaN(d.getTime())&&d>=ws;});
+  const qWeek       = quoteRecs.filter(q=>{const d=new Date(q.createdAt);return !isNaN(d.getTime())&&d>=ws;});
+  const conv        = quoteRecs.length>0?Math.min(100,(lastInvoices.length/(lastInvoices.length+quoteRecs.length))*100):0;
 
-  const monthly = Array(12).fill(0);
-  salesInv.forEach(i=>{
-    const d=new Date(i.createdAt);
-    if(!isNaN(d.getTime())&&d.getFullYear()===year){monthly[d.getMonth()]+=(parseFloat(i.total)||0);}
-  });
+  const monthly=Array(12).fill(0);
+  salesInv.forEach(i=>{const d=new Date(i.createdAt);if(!isNaN(d.getTime()))monthly[d.getMonth()]+=(parseFloat(i.total)||0);});
 
   const umap={};
   salesInv.forEach(i=>{const n=(i.contact&&i.contact.fullName)||"Unassigned";umap[n]=(umap[n]||0)+(parseFloat(i.total)||0);});
   const byUser=Object.entries(umap).sort((a,b)=>b[1]-a[1]).slice(0,10);
 
-  const conv=validQ.length>0?Math.min(100,(lastInvoices.length/(lastInvoices.length+validQ.length))*100):0;
-  const cmSales=monthly[cm], cmGoal=MONTHLY_GOALS[cm];
-  const cmPct=cmGoal>0?Math.min(100,(cmSales/cmGoal)*100):0;
+  const cmSales=monthly[cm],cmGoal=MONTHLY_GOALS[cm],cmPct=cmGoal>0?Math.min(100,(cmSales/cmGoal)*100):0;
   const ytdGoal=MONTHLY_GOALS.slice(0,cm+1).reduce((s,g)=>s+g,0);
   const ytdPct=ytdGoal>0?Math.min(100,(ytdSales/ytdGoal)*100):0;
 
-  document.getElementById("dash-sub").textContent=`${fmtN(lastInvoices.length)} orders this year · Last updated ${new Date().toLocaleTimeString()}`;
+  document.getElementById("dash-sub").textContent=`${fmtN(lastInvoices.length)} total invoices · ${fmtN(salesInv.length)} counted toward sales · Updated ${new Date().toLocaleTimeString()}`;
   document.getElementById("orders-count").textContent=fmtN(lastInvoices.length)+" total";
   document.getElementById("chart-year").textContent=year;
   document.getElementById("ytd-year").textContent=year;
@@ -351,11 +321,10 @@ function render() {
     <div class="kpi"><div><div class="kpi-lbl">YTD Sales</div><div class="kpi-val" style="color:#3D9A5C">${fmt(ytdSales)}</div><div class="kpi-s">${year} year to date</div></div><div class="kpi-ico ig">💰</div></div>
     <div class="kpi"><div><div class="kpi-lbl">Outstanding Invoices</div><div class="kpi-val" style="color:#DC2626">${fmt(outstanding)}</div><div class="kpi-s">Unpaid balance</div></div><div class="kpi-ico ir">📄</div></div>
     <div class="kpi"><div><div class="kpi-lbl">Open Orders</div><div class="kpi-val">${fmtN(openInv.length)}</div><div class="kpi-s">Active in pipeline</div></div><div class="kpi-ico ia">📦</div></div>
-    <div class="kpi"><div><div class="kpi-lbl">Quotes This Week</div><div class="kpi-val">${fmtN(qWeek.length)}</div><div class="kpi-s">${fmtN(validQ.length)} total on record</div></div><div class="kpi-ico ib">📝</div></div>
+    <div class="kpi"><div><div class="kpi-lbl">Quotes This Week</div><div class="kpi-val">${fmtN(qWeek.length)}</div><div class="kpi-s">${fmtN(quoteRecs.length)} total on record</div></div><div class="kpi-ico ib">📝</div></div>
     <div class="kpi"><div><div class="kpi-lbl">Conversion Rate</div><div class="kpi-val">${conv.toFixed(1)}%</div><div class="kpi-s">Quotes to orders</div></div><div class="kpi-ico ig">📈</div></div>
   `;
 
-  // Ring
   const ringColor=cmPct>=75?"#3D9A5C":cmPct>=50?"#D97706":"#DC2626";
   const r=54,circ=2*Math.PI*r,dash=circ*(cmPct/100),gap=circ-dash;
   document.getElementById("ring-wrap").innerHTML=`
@@ -372,7 +341,6 @@ function render() {
       <div style="font-size:12px;color:#6B7280">${fmt(Math.max(0,cmGoal-cmSales))} remaining</div>
     </div>`;
 
-  // YTD bar
   const ytdColor=ytdPct>=75?"#3D9A5C":ytdPct>=50?"#D97706":"#DC2626";
   document.getElementById("ytd-progress").innerHTML=`
     <div style="display:flex;justify-content:space-between;margin-bottom:12px">
@@ -387,39 +355,36 @@ function render() {
       <span>${fmt(Math.max(0,ytdGoal-ytdSales))} remaining</span>
     </div>`;
 
-  // Monthly grid
   document.getElementById("month-grid").innerHTML=MONTHS.slice(0,cm+1).map((m,i)=>{
-    const actual=monthly[i],goal=MONTHLY_GOALS[i];
-    const pct=goal>0?Math.min(100,(actual/goal)*100):0;
+    const actual=monthly[i],goal=MONTHLY_GOALS[i],pct=goal>0?Math.min(100,(actual/goal)*100):0;
     const color=pct>=75?"#3D9A5C":pct>=50?"#D97706":"#DC2626";
     return`<div class="month-card${i===cm?" current":""}">
       <div class="month-lbl">${m}${i===cm?" · Now":""}</div>
       <div class="month-val">${fmt(actual)}</div>
       <div class="month-track"><div class="month-fill" style="width:${pct.toFixed(1)}%;background:${color}"></div></div>
       <div style="display:flex;justify-content:space-between;font-size:11px">
-        <span class="month-pct" style="color:${color}">${Math.round(pct)}%</span>
+        <span style="font-weight:600;color:${color}">${Math.round(pct)}%</span>
         <span style="color:#9CA3AF">${fmt(goal)}</span>
       </div>
     </div>`;
   }).join("");
 
-  // Sales by user
   document.getElementById("user-table").innerHTML=byUser.length
     ?byUser.map(([n,a])=>`<tr><td>${n}</td><td style="text-align:right;font-weight:600;color:#3D9A5C">${fmt(a)}</td></tr>`).join("")
     :`<tr><td colspan="2" style="color:#9CA3AF;text-align:center;padding:20px">No sales data — check status settings</td></tr>`;
 
-  // Quotes table
-  document.getElementById("quotes-table").innerHTML=validQ.slice(0,10).length
-    ?validQ.slice(0,10).map(q=>`<tr>
+  const recentQ=[...lastQuotes].reverse().slice(0,10);
+  document.getElementById("quotes-table").innerHTML=recentQ.length
+    ?recentQ.map(q=>`<tr>
         <td style="color:#6B7280">${q.visualId||""}</td>
         <td>${(q.contact&&q.contact.fullName)||"—"}</td>
         <td style="text-align:right">${fmt(q.total)}</td>
         <td><span class="pill">${(q.status&&q.status.name)||"—"}</span></td>
       </tr>`).join("")
-    :`<tr><td colspan="4" style="color:#9CA3AF;text-align:center;padding:20px">No quotes — check status settings</td></tr>`;
+    :`<tr><td colspan="4" style="color:#9CA3AF;text-align:center;padding:20px">No quotes</td></tr>`;
 
-  // Orders table
-  document.getElementById("orders-table").innerHTML=lastInvoices.slice(0,20).map(o=>`<tr>
+  const recentO=[...lastInvoices].reverse().slice(0,20);
+  document.getElementById("orders-table").innerHTML=recentO.map(o=>`<tr>
     <td style="color:#6B7280">${o.visualId||""}</td>
     <td>${(o.contact&&o.contact.fullName)||"—"}</td>
     <td style="color:#6B7280;white-space:nowrap">${o.createdAt?new Date(o.createdAt).toLocaleDateString():"—"}</td>
@@ -427,60 +392,47 @@ function render() {
     <td style="text-align:right;color:${parseFloat(o.amountOutstanding)>0?"#DC2626":"#3D9A5C"}">${fmt(o.amountOutstanding)}</td>
     <td><span class="pill">${(o.status&&o.status.name)||"—"}</span></td>
   </tr>`).join("");
-
-  if(currentPage==='settings') renderSettings();
 }
 
 function renderSettings() {
-  const sections = [
-    {key:'sales',    title:'YTD Sales & Monthly Chart', desc:'Orders that count toward revenue figures'},
-    {key:'open',     title:'Open Orders',               desc:'Orders shown as active in the pipeline'},
-    {key:'quotes',   title:'Active Quotes',             desc:'Quotes shown in the quotes table and this week count'},
-    {key:'outstanding', title:'Outstanding Balance',    desc:'Orders included in the unpaid balance total'},
+  const sections=[
+    {key:'sales',       title:'YTD Sales & Monthly Chart', desc:'Which statuses count toward revenue figures and the monthly chart'},
+    {key:'open',        title:'Open Orders',               desc:'Which statuses count as active open orders'},
+    {key:'quotes',      title:'Active Quotes',             desc:'Which statuses appear in the quotes table and weekly count'},
+    {key:'outstanding', title:'Outstanding Balance',       desc:'Which statuses are included in the unpaid balance total'},
   ];
-
   document.getElementById("settings-grid").innerHTML=sections.map(sec=>`
     <div class="settings-card">
-      <div class="settings-card-hd">
-        <h3>${sec.title}</h3>
-        <p>${sec.desc}</p>
+      <div class="settings-card-hd"><h3>${sec.title}</h3><p>${sec.desc}</p></div>
+      <div class="status-list" id="list-${sec.key}">
+        ${allStatuses.map(s=>`
+          <div class="status-item">
+            <input type="checkbox" id="${sec.key}-${s.id}" ${settings[sec.key].includes(s.id)?"checked":""}
+              onchange="toggle('${sec.key}','${s.id}',this.checked)"/>
+            <label for="${sec.key}-${s.id}" title="${s.name}">${s.name}</label>
+          </div>`).join("")}
       </div>
-      <div class="status-list" id="list-${sec.key}"></div>
       <div class="settings-actions">
         <button class="btn btn-gray" onclick="selectAll('${sec.key}',true)">All</button>
         <button class="btn btn-gray" onclick="selectAll('${sec.key}',false)">None</button>
         <span class="save-toast" id="toast-${sec.key}">Saved ✓</span>
       </div>
-    </div>
-  `).join("");
-
-  sections.forEach(sec=>{
-    const container=document.getElementById("list-"+sec.key);
-    container.innerHTML=allStatuses.map(s=>{
-      const checked=settings[sec.key].includes(s.id)?"checked":"";
-      return`<div class="status-item">
-        <input type="checkbox" id="${sec.key}-${s.id}" ${checked} onchange="toggleStatus('${sec.key}','${s.id}',this.checked)"/>
-        <label for="${sec.key}-${s.id}">${s.name}</label>
-      </div>`;
-    }).join("");
-  });
+    </div>`).join("");
 }
 
-function toggleStatus(section, id, checked) {
-  if(checked) { if(!settings[section].includes(id)) settings[section].push(id); }
-  else { settings[section]=settings[section].filter(x=>x!==id); }
+function toggle(section, id, checked) {
+  if(checked){if(!settings[section].includes(id))settings[section].push(id);}
+  else{settings[section]=settings[section].filter(x=>x!==id);}
   localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));
   render();
-  const toast=document.getElementById("toast-"+section);
-  toast.style.opacity="1";
-  setTimeout(()=>toast.style.opacity="0",1500);
+  const t=document.getElementById("toast-"+section);
+  t.style.opacity="1"; setTimeout(()=>t.style.opacity="0",1500);
 }
 
 function selectAll(section, val) {
   settings[section]=val?allStatuses.map(s=>s.id):[];
   localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));
-  renderSettings();
-  render();
+  renderSettings(); render();
 }
 
 startLoad(false);
