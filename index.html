@@ -206,7 +206,8 @@ async function fetchAllRecords(type, onProgress) {
   do {
     page++; if(onProgress) onProgress(page, nodes.length);
     const after = cursor ? `,after:"${cursor}"` : "";
-    const data = await gql(`query{${type}(first:25,sortOn:VISUAL_ID${after}){nodes{id visualId createdAt total amountOutstanding status{id name}contact{fullName}}pageInfo{hasNextPage endCursor}}}`);
+    const yearFilter = type==="invoices" ? `,inProductionAfter:"${new Date().getFullYear()}-01-01T00:00:00Z"` : "";
+    const data = await gql(`query{${type}(first:25,sortOn:VISUAL_ID${yearFilter}${after}){nodes{id visualId createdAt total amountOutstanding status{id name}contact{fullName}}pageInfo{hasNextPage endCursor}}}`);
     nodes.push(...data[type].nodes);
     cursor = data[type].pageInfo.hasNextPage ? data[type].pageInfo.endCursor : null;
     if(cursor) await new Promise(r=>setTimeout(r,700));
@@ -266,12 +267,21 @@ async function startLoad(forceRefresh) {
 }
 
 function initSettings() {
-  // If settings are empty (first load), select ALL statuses by default
   const allIds = allStatuses.map(s=>s.id);
-  ['sales','open','quotes','outstanding'].forEach(key=>{
-    if(!settings[key]||settings[key].length===0) settings[key]=[...allIds];
-  });
-  localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));
+  const hasExisting = localStorage.getItem(SETTINGS_KEY);
+  if(!hasExisting) {
+    // First time ever — select all statuses by default
+    ['sales','open','quotes','outstanding'].forEach(key=>{ settings[key]=[...allIds]; });
+    localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));
+  } else {
+    // Already saved — just add any new statuses that appeared since last time
+    ['sales','open','quotes','outstanding'].forEach(key=>{
+      if(!settings[key]) settings[key]=[...allIds];
+      const existing = new Set(settings[key]);
+      allIds.forEach(id=>{ if(!existing.has(id)) settings[key].push(id); });
+    });
+    localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));
+  }
 }
 
 function hideLoading() {
@@ -290,7 +300,7 @@ function render() {
   const ys=new Date(year,0,1);
   const ws=new Date(now); ws.setDate(now.getDate()-now.getDay());
 
-  const salesInv    = lastInvoices.filter(i=>included(i,'sales')&&new Date(i.createdAt)>=ys);
+  const salesInv    = lastInvoices.filter(i=>included(i,'sales'));
   const openInv     = lastInvoices.filter(i=>included(i,'open'));
   const outstandInv = lastInvoices.filter(i=>included(i,'outstanding'));
   const quoteRecs   = lastQuotes.filter(q=>included(q,'quotes'));
