@@ -7,8 +7,8 @@ export default async function handler(req, res) {
   const email = process.env.PRINTAVO_EMAIL;
   if(!token || !email) return res.status(500).json({ error: "Missing PRINTAVO_API_TOKEN or PRINTAVO_EMAIL" });
 
-  const upstashUrl   = process.env.UPSTASH_REDIS_REST_URL;
-  const upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const upstashUrl   = process.env.KV_REST_API_URL;
+  const upstashToken = process.env.KV_REST_API_TOKEN;
   if(!upstashUrl || !upstashToken) return res.status(500).json({ error: "Missing Upstash env vars" });
 
   async function gql(query) {
