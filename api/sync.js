@@ -62,11 +62,11 @@ export default async function handler(req, res) {
 
     const payload = JSON.stringify({ invoices, quotes, statuses, syncedAt: new Date().toISOString() });
 
-    // Save to Upstash via REST
-    const setRes = await fetch(`${upstashUrl}/set/printavo_data`, {
+    // Save to Upstash via REST pipeline — array format: [command, key, value]
+    const setRes = await fetch(`${upstashUrl}/pipeline`, {
       method: "POST",
       headers: { Authorization: `Bearer ${upstashToken}`, "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+      body: JSON.stringify([["SET", "printavo_data", payload]])
     });
     const setJson = await setRes.json();
     if(setJson.error) throw new Error("Upstash error: " + setJson.error);
