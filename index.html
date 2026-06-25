@@ -8,63 +8,108 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{background:#F4F6F8;color:#111827;font-family:'Inter',sans-serif;font-size:14px}
-.hdr{background:#fff;border-bottom:1px solid #E5E7EB;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:10}
+.hdr{background:#fff;border-bottom:1px solid #E5E7EB;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
 .logo{display:flex;align-items:center;gap:10px}
 .logomark{width:32px;height:32px;background:#3D9A5C;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:15px}
 .hdr-title{font-size:15px;font-weight:700}
 .hdr-sub{font-size:12px;color:#6B7280}
 .hdr-right{display:flex;align-items:center;gap:10px}
-.btn{border:none;padding:7px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;transition:background .15s}
+.btn{border:none;padding:7px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600}
 .btn-green{background:#3D9A5C;color:#fff}.btn-green:hover{background:#2F7A48}
 .btn-gray{background:#F3F4F6;color:#374151;border:1px solid #E5E7EB}.btn-gray:hover{background:#E5E7EB}
+.btn-sm{padding:4px 10px;font-size:12px}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .last-updated{font-size:11px;color:#9CA3AF}
 .nav{display:flex;gap:2px;background:#F3F4F6;border-radius:8px;padding:3px}
 .nav-btn{border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;background:transparent;color:#6B7280}
 .nav-btn.active{background:#fff;color:#111827;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .page{display:none}.page.active{display:block}
-.dash{padding:28px 32px}
-.section-title{font-size:22px;font-weight:700;margin-bottom:4px}
-.section-sub{font-size:13px;color:#6B7280;margin-bottom:24px}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:14px;margin-bottom:24px}
-.kpi{background:#fff;border:1px solid #E5E7EB;border-radius:10px;padding:18px 20px;display:flex;justify-content:space-between;align-items:flex-start}
+.dash{padding:24px}
+
+/* KPI Grid */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:20px}
+.kpi{background:#fff;border:1px solid #E5E7EB;border-radius:10px;padding:18px 20px;display:flex;justify-content:space-between;align-items:flex-start;cursor:pointer;transition:box-shadow .15s,border-color .15s}
+.kpi:hover{box-shadow:0 2px 8px rgba(0,0,0,.08);border-color:#3D9A5C}
+.kpi.no-click{cursor:default}.kpi.no-click:hover{box-shadow:none;border-color:#E5E7EB}
 .kpi-lbl{font-size:13px;color:#6B7280;font-weight:500;margin-bottom:5px}
 .kpi-val{font-size:26px;font-weight:700;letter-spacing:-.5px}
 .kpi-s{font-size:12px;color:#6B7280;margin-top:5px}
 .kpi-ico{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.ig{background:#EAF5EE}.ir{background:#FEE2E2}.ia{background:#FEF3C7}.ib{background:#EFF6FF}
-.card{background:#fff;border:1px solid #E5E7EB;border-radius:10px;margin-bottom:18px;overflow:hidden}
+.ig{background:#EAF5EE}.ir{background:#FEE2E2}.ia{background:#FEF3C7}.ib{background:#EFF6FF}.ip{background:#F3E8FF}
+
+/* Draggable widget grid */
+.widget-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;margin-bottom:20px}
+.widget{background:#fff;border:1px solid #E5E7EB;border-radius:10px;overflow:hidden;position:relative}
+.widget.w4{grid-column:span 4}.widget.w6{grid-column:span 6}.widget.w8{grid-column:span 8}.widget.w12{grid-column:span 12}
+.widget.w3{grid-column:span 3}
+.widget-hd{padding:14px 16px;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;justify-content:space-between;user-select:none}
+.widget-hd h3{font-size:13px;font-weight:600;color:#111827}
+.widget-hd-right{display:flex;align-items:center;gap:6px}
+.widget-hd span{font-size:11px;color:#9CA3AF}
+.resize-btn{background:none;border:none;cursor:pointer;color:#9CA3AF;font-size:11px;padding:2px 6px;border-radius:4px}
+.resize-btn:hover{background:#F3F4F6;color:#374151}
+.widget-bd{padding:16px}
+
+/* Cards */
+.card{background:#fff;border:1px solid #E5E7EB;border-radius:10px;margin-bottom:16px;overflow:hidden}
 .card-hd{padding:14px 20px;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;justify-content:space-between}
 .card-hd h3{font-size:14px;font-weight:600}
-.card-hd span{font-size:12px;color:#6B7280}
-.card-bd{padding:20px}
+.card-bd{padding:16px}
+
+/* Tables */
 table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;font-size:11px;letter-spacing:.4px;text-transform:uppercase;color:#6B7280;padding:0 12px 10px 0;font-weight:600}
-td{padding:10px 12px 10px 0;border-top:1px solid #E5E7EB;color:#111827}
+th{text-align:left;font-size:11px;letter-spacing:.4px;text-transform:uppercase;color:#6B7280;padding:0 10px 8px 0;font-weight:600;cursor:pointer;white-space:nowrap;user-select:none}
+th:hover{color:#111827}
+th .sort-icon{display:inline-block;margin-left:3px;opacity:.4}
+th.sorted .sort-icon{opacity:1;color:#3D9A5C}
+td{padding:9px 10px 9px 0;border-top:1px solid #E5E7EB;color:#111827;vertical-align:top}
 tr:hover td{background:#F9FAFB}
-.pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;background:#F3F4F6;color:#374151}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.ring-wrap{display:flex;align-items:center;gap:28px;padding:4px 0}
-.month-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
-.month-card{display:flex;flex-direction:column;gap:5px;padding:10px;border-radius:8px;border:1px solid #E5E7EB}
+.pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;background:#F3F4F6;color:#374151;white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis}
+
+/* Month chart */
+.month-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.month-card{display:flex;flex-direction:column;gap:4px;padding:10px;border-radius:8px;border:1px solid #E5E7EB}
 .month-card.current{border-color:#BBF7D0;background:#F0FDF4}
-.month-lbl{font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.4px}
-.month-val{font-size:15px;font-weight:700;color:#111827}
-.month-track{height:8px;background:#F3F4F6;border-radius:99px;overflow:hidden}
-.month-fill{height:100%;border-radius:99px;transition:width .6s ease}
+.month-lbl{font-size:10px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.4px}
+.month-val{font-size:13px;font-weight:700;color:#111827}
+.month-prev{font-size:11px;color:#9CA3AF}
+.month-track{height:6px;background:#F3F4F6;border-radius:99px;overflow:hidden;margin:2px 0}
+.month-fill{height:100%;border-radius:99px}
+.month-pct{font-size:10px;font-weight:600}
+.month-growth{font-size:10px;font-weight:600}
+
+/* Ring */
+.ring-wrap{display:flex;align-items:center;gap:24px;padding:4px 0}
+
+/* Modal / Drill-down */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:12px;width:100%;max-width:900px;box-shadow:0 20px 60px rgba(0,0,0,.2);overflow:hidden}
+.modal-hd{padding:18px 24px;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;justify-content:space-between}
+.modal-hd h2{font-size:16px;font-weight:700}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:#6B7280;line-height:1;padding:4px}
+.modal-close:hover{color:#111827}
+.modal-bd{padding:20px;max-height:70vh;overflow-y:auto}
+.modal-filters{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.modal-filters select{background:#F9FAFB;border:1px solid #E5E7EB;border-radius:6px;padding:6px 10px;font-size:13px;color:#374151;outline:none}
+.modal-filters select:focus{border-color:#3D9A5C}
+.modal-stat{font-size:13px;color:#6B7280}
+
 /* Settings */
 .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .settings-card{background:#fff;border:1px solid #E5E7EB;border-radius:10px;overflow:hidden}
 .settings-card-hd{padding:14px 20px;border-bottom:1px solid #E5E7EB;background:#F9FAFB}
 .settings-card-hd h3{font-size:14px;font-weight:600;margin-bottom:2px}
 .settings-card-hd p{font-size:12px;color:#6B7280}
-.status-list{padding:8px 12px;display:flex;flex-direction:column;gap:1px;max-height:380px;overflow-y:auto}
-.status-item{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:6px;cursor:pointer}
+.status-list{padding:8px 12px;display:flex;flex-direction:column;gap:1px;max-height:360px;overflow-y:auto}
+.status-item{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:6px}
 .status-item:hover{background:#F9FAFB}
 .status-item input[type=checkbox]{width:15px;height:15px;accent-color:#3D9A5C;cursor:pointer;flex-shrink:0}
-.status-item label{cursor:pointer;font-size:13px;color:#374151;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.settings-actions{padding:12px 16px;border-top:1px solid #E5E7EB;display:flex;gap:8px;align-items:center}
+.status-item label{cursor:pointer;font-size:13px;color:#374151;flex:1}
+.settings-actions{padding:10px 16px;border-top:1px solid #E5E7EB;display:flex;gap:8px;align-items:center}
 .save-toast{font-size:12px;color:#3D9A5C;font-weight:500;opacity:0;transition:opacity .3s}
+
+/* Loading */
 .spin-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:80px 32px}
 .spinner{width:32px;height:32px;border:3px solid #E5E7EB;border-top-color:#3D9A5C;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -72,11 +117,25 @@ tr:hover td{background:#F9FAFB}
 .progress-bar{height:100%;background:#3D9A5C;border-radius:99px;transition:width .3s ease}
 .progress-label{font-size:12px;color:#6B7280;text-align:center}
 .err{background:#FEE2E2;border:1px solid #FECACA;border-radius:8px;padding:14px 18px;color:#DC2626;margin-bottom:18px}
-@media(max-width:900px){.month-grid{grid-template-columns:repeat(3,1fr)}.settings-grid{grid-template-columns:1fr}}
-@media(max-width:700px){.two{grid-template-columns:1fr}.dash{padding:16px}.hdr{padding:0 16px}.month-grid{grid-template-columns:repeat(2,1fr)}}
+.empty{color:#9CA3AF;text-align:center;padding:24px;font-size:13px}
+
+/* Misc */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600}
+.badge-green{background:#EAF5EE;color:#3D9A5C}
+.badge-red{background:#FEE2E2;color:#DC2626}
+.badge-amber{background:#FEF3C7;color:#D97706}
+.clickable{cursor:pointer;text-decoration:underline;text-decoration-color:#E5E7EB;text-underline-offset:2px}
+.clickable:hover{text-decoration-color:#3D9A5C;color:#3D9A5C}
+.ytd-progress-bar{height:14px;background:#F3F4F6;border-radius:99px;overflow:hidden;margin:10px 0 6px}
+.ytd-progress-fill{height:100%;border-radius:99px;transition:width .8s ease}
+
+@media(max-width:900px){.month-grid{grid-template-columns:repeat(3,1fr)}.settings-grid{grid-template-columns:1fr}.widget.w4,.widget.w3{grid-column:span 6}.widget.w8{grid-column:span 12}}
+@media(max-width:600px){.dash{padding:12px}.month-grid{grid-template-columns:repeat(2,1fr)}.widget.w4,.widget.w6,.widget.w3{grid-column:span 12}}
 </style>
 </head>
 <body>
+
+<!-- Header -->
 <div class="hdr">
   <div class="logo">
     <div class="logomark">P</div>
@@ -85,121 +144,116 @@ tr:hover td{background:#F9FAFB}
   <div class="hdr-right">
     <div class="last-updated" id="last-updated"></div>
     <div class="nav">
-      <button class="nav-btn active" id="nav-dashboard" onclick="showPage('dashboard',this)">Dashboard</button>
-      <button class="nav-btn" id="nav-settings" onclick="showPage('settings',this)">Settings</button>
+      <button class="nav-btn active" onclick="showPage('dashboard',this)">Dashboard</button>
+      <button class="nav-btn" onclick="showPage('settings',this)">Settings</button>
     </div>
     <button class="btn btn-green" id="refresh-btn" onclick="startLoad(true)" disabled>Refresh</button>
   </div>
 </div>
 
+<!-- Loading -->
 <div id="loading" class="spin-wrap">
   <div class="spinner"></div>
-  <div style="font-size:14px;font-weight:600;color:#111827">Loading your Printavo data</div>
+  <div style="font-size:14px;font-weight:600">Loading your Printavo data</div>
   <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:5%"></div></div>
-  <div class="progress-label" id="progress-label">Fetching records...</div>
+  <div class="progress-label" id="progress-label">Connecting...</div>
 </div>
+
+<!-- Error -->
 <div id="error-wrap" style="display:none" class="dash">
   <div class="err" id="error-msg"></div>
   <button class="btn btn-green" onclick="startLoad(true)">Retry</button>
 </div>
 
+<!-- Dashboard page -->
 <div id="page-dashboard" class="page">
   <div class="dash">
-    <div class="section-title">Dashboard</div>
-    <div class="section-sub" id="dash-sub">Your shop performance overview</div>
-    <div class="kpis" id="kpis"></div>
-    <div class="two" style="margin-bottom:18px">
-      <div class="card">
-        <div class="card-hd"><h3 id="cur-month-title">This Month vs Goal</h3></div>
-        <div class="card-bd"><div class="ring-wrap" id="ring-wrap"></div></div>
-      </div>
-      <div class="card">
-        <div class="card-hd"><h3>YTD Progress</h3><span id="ytd-year"></span></div>
-        <div class="card-bd" id="ytd-progress"></div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:20px">
+      <div>
+        <div style="font-size:22px;font-weight:700">Dashboard</div>
+        <div style="font-size:13px;color:#6B7280;margin-top:2px" id="dash-sub"></div>
       </div>
     </div>
-    <div class="card">
-      <div class="card-hd"><h3>Sales by Month</h3><span id="chart-year"></span></div>
-      <div class="card-bd"><div class="month-grid" id="month-grid"></div></div>
-    </div>
-    <div class="two">
-      <div class="card">
-        <div class="card-hd"><h3>YTD Sales by Contact</h3><span>Top 10</span></div>
-        <div class="card-bd" style="padding:12px 20px">
-          <table><thead><tr><th>Contact</th><th style="text-align:right">Sales</th></tr></thead><tbody id="user-table"></tbody></table>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-hd"><h3>Recent Quotes</h3><span>Last 10</span></div>
-        <div class="card-bd" style="padding:12px 20px">
-          <table><thead><tr><th>#</th><th>Contact</th><th style="text-align:right">Total</th><th>Status</th></tr></thead><tbody id="quotes-table"></tbody></table>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-hd"><h3>Recent Orders</h3><span id="orders-count"></span></div>
-      <div class="card-bd" style="padding:12px 20px;overflow-x:auto">
-        <table><thead><tr><th>#</th><th>Contact</th><th>Created</th><th style="text-align:right">Total</th><th style="text-align:right">Outstanding</th><th>Status</th></tr></thead><tbody id="orders-table"></tbody></table>
-      </div>
-    </div>
+
+    <!-- KPI Row -->
+    <div class="kpi-grid" id="kpis"></div>
+
+    <!-- Widget Grid -->
+    <div class="widget-grid" id="widget-grid"></div>
   </div>
 </div>
 
+<!-- Settings page -->
 <div id="page-settings" class="page">
   <div class="dash">
-    <div class="section-title">Settings</div>
-    <div class="section-sub">Choose which statuses are included in each report section. Changes save automatically and update the dashboard instantly.</div>
+    <div style="font-size:22px;font-weight:700;margin-bottom:4px">Settings</div>
+    <div style="font-size:13px;color:#6B7280;margin-bottom:24px">Choose which statuses are included in each report section.</div>
     <div class="settings-grid" id="settings-grid"></div>
+  </div>
+</div>
+
+<!-- Drill-down Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-hd">
+      <h2 id="modal-title">Detail</h2>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-bd">
+      <div class="modal-filters" id="modal-filters"></div>
+      <div id="modal-content"></div>
+    </div>
   </div>
 </div>
 
 <script>
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-const CACHE_KEY = "printavo_data_v6";
-const SETTINGS_KEY = "printavo_settings_v2";
-const REFRESH_MS = 30 * 60 * 1000;
+const CACHE_KEY = "printavo_data_v7";
+const SETTINGS_KEY = "printavo_settings_v3";
+const LAYOUT_KEY = "printavo_layout_v1";
+const REFRESH_MS = 35 * 60 * 1000;
 const MONTHLY_GOALS = [260000,260000,260000,260000,260000,260000,260000,260000,260000,260000,260000,260000];
 
+let invoices=[], quotes=[], statuses=[], prevYearInvoices=[];
+let settings = JSON.parse(localStorage.getItem(SETTINGS_KEY)||"null") || {sales:[],open:[],quotes:[],outstanding:[]};
+let widgetSizes = JSON.parse(localStorage.getItem(LAYOUT_KEY)||"null") || {};
 let isLoading = false;
-let lastInvoices = [], lastQuotes = [], allStatuses = [];
-let settings = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "null") || {sales:[],open:[],quotes:[],outstanding:[]};
-// Empty array = all statuses included (no filter)
+let sortState = {};
 
 const fmt  = n => new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}).format(n||0);
 const fmtN = n => new Intl.NumberFormat("en-US").format(n||0);
+const pct  = (a,b) => b>0 ? ((a-b)/b*100).toFixed(1) : "—";
 
 function showPage(page, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+page).classList.add('active');
-  btn.classList.add('active');
+  if(btn) btn.classList.add('active');
   if(page==='settings') renderSettings();
 }
 
-function setProgress(pct, label) {
-  const bar=document.getElementById("progress-bar"); if(bar) bar.style.width=Math.min(95,pct)+"%";
-  const lbl=document.getElementById("progress-label"); if(lbl) lbl.textContent=label;
+function setProgress(p,l){
+  const bar=document.getElementById("progress-bar"); if(bar) bar.style.width=Math.min(95,p)+"%";
+  const lbl=document.getElementById("progress-label"); if(lbl) lbl.textContent=l;
 }
 
-async function startLoad(forceRefresh) {
+// ── Data loading ──────────────────────────────────────────────────────────
+async function startLoad(force) {
   if(isLoading) return;
   isLoading=true;
   document.getElementById("refresh-btn").disabled=true;
 
-  if(!forceRefresh) {
+  if(!force) {
     try {
       const cached=JSON.parse(localStorage.getItem(CACHE_KEY)||"null");
-      if(cached&&cached.invoices&&cached.quotes&&cached.statuses) {
-        lastInvoices=cached.invoices; lastQuotes=cached.quotes; allStatuses=cached.statuses;
-        // Init settings with all statuses selected if first time
+      if(cached&&cached.invoices) {
+        invoices=cached.invoices; quotes=cached.quotes; statuses=cached.statuses||[];
         initSettings();
         hideLoading(); render();
         document.getElementById("last-updated").textContent="Cached · "+new Date(cached.timestamp).toLocaleTimeString();
         isLoading=false; document.getElementById("refresh-btn").disabled=false;
-        // Check if cache is older than 35 minutes, if so refresh from /api/data
-        const age = Date.now() - (cached.timestamp||0);
-        if(age > 35*60*1000) startLoad(true);
-        else setTimeout(()=>startLoad(true), REFRESH_MS - age);
+        const age=Date.now()-(cached.timestamp||0);
+        setTimeout(()=>startLoad(true), age>REFRESH_MS?0:REFRESH_MS-age);
         return;
       }
     } catch(e){}
@@ -208,210 +262,485 @@ async function startLoad(forceRefresh) {
   document.getElementById("loading").style.display="";
   document.getElementById("page-dashboard").classList.remove("active");
   document.getElementById("error-wrap").style.display="none";
-  setProgress(5,"Starting...");
+  setProgress(10,"Loading from cache...");
 
   try {
-    setProgress(50,"Loading data...");
     const res = await fetch("/api/data");
-    if(!res.ok) {
-      const err = await res.json().catch(()=>({}));
-      throw new Error(err.error || "Failed to load data (status "+res.status+")");
-    }
+    if(!res.ok) throw new Error("Data endpoint returned "+res.status);
     const payload = await res.json();
-    lastInvoices = payload.invoices || [];
-    lastQuotes   = payload.quotes   || [];
-    allStatuses  = payload.statuses || [];
+    if(!payload.invoices) throw new Error(payload.error||"No invoice data returned");
+
+    invoices=payload.invoices; quotes=payload.quotes; statuses=payload.statuses||[];
     initSettings();
-    localStorage.setItem(CACHE_KEY,JSON.stringify({invoices:lastInvoices,quotes:lastQuotes,statuses:allStatuses,timestamp:Date.now()}));
-    const syncedAt = payload.syncedAt ? new Date(payload.syncedAt).toLocaleTimeString() : "unknown";
+    localStorage.setItem(CACHE_KEY,JSON.stringify({invoices,quotes,statuses,timestamp:Date.now()}));
+    const syncedAt=payload.syncedAt?new Date(payload.syncedAt).toLocaleTimeString():"unknown";
     document.getElementById("last-updated").textContent="Synced at "+syncedAt;
     setProgress(100,"Done!");
     hideLoading(); render();
     setTimeout(()=>startLoad(true),REFRESH_MS);
   } catch(e) {
     document.getElementById("error-msg").textContent=e.message;
-    if(lastInvoices.length>0){hideLoading();render();document.getElementById("last-updated").textContent="Refresh failed — cached data shown";}
+    if(invoices.length>0){hideLoading();render();document.getElementById("last-updated").textContent="Refresh failed — cached data shown";}
     else{document.getElementById("error-wrap").style.display="";document.getElementById("loading").style.display="none";}
   } finally {
     isLoading=false; document.getElementById("refresh-btn").disabled=false;
   }
 }
 
-function initSettings() {
-  const allIds = allStatuses.map(s=>s.id);
-  const hasExisting = localStorage.getItem(SETTINGS_KEY);
-  if(!hasExisting) {
-    // First time ever — select all statuses by default
-    ['sales','open','quotes','outstanding'].forEach(key=>{ settings[key]=[...allIds]; });
+function hideLoading(){
+  document.getElementById("loading").style.display="none";
+  document.getElementById("page-dashboard").classList.add("active");
+}
+
+// ── Settings ──────────────────────────────────────────────────────────────
+function initSettings(){
+  const allIds=statuses.map(s=>s.id);
+  const hasExisting=localStorage.getItem(SETTINGS_KEY);
+  if(!hasExisting){
+    ['sales','open','quotes','outstanding'].forEach(k=>{settings[k]=[...allIds];});
     localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));
   } else {
-    // Already saved — just add any new statuses that appeared since last time
-    ['sales','open','quotes','outstanding'].forEach(key=>{
-      if(!settings[key]) settings[key]=[...allIds];
-      const existing = new Set(settings[key]);
-      allIds.forEach(id=>{ if(!existing.has(id)) settings[key].push(id); });
+    ['sales','open','quotes','outstanding'].forEach(k=>{
+      if(!settings[k]) settings[k]=[...allIds];
+      const ex=new Set(settings[k]);
+      allIds.forEach(id=>{if(!ex.has(id))settings[k].push(id);});
     });
     localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));
   }
 }
 
-function hideLoading() {
-  document.getElementById("loading").style.display="none";
-  document.getElementById("page-dashboard").classList.add("active");
-}
-
-function included(record, key) {
+function included(rec,key){
   if(!settings[key]||settings[key].length===0) return true;
-  const id = record.status&&record.status.id;
-  return !id || settings[key].includes(id);
+  const id=rec.status&&rec.status.id;
+  return !id||settings[key].includes(id);
 }
 
-function render() {
-  const now=new Date(), year=now.getFullYear(), cm=now.getMonth();
-  const ys=new Date(year,0,1);
-  const ws=new Date(now); ws.setDate(now.getDate()-now.getDay());
+// ── Data helpers ──────────────────────────────────────────────────────────
+function getCompany(record){
+  // Use contact fullName — if it contains a dash, take the part before it as company
+  const name=(record.contact&&record.contact.fullName)||"";
+  if(!name) return "Unknown";
+  return name;
+}
 
-  const salesInv    = lastInvoices.filter(i=>included(i,'sales'));
-  const openInv     = lastInvoices.filter(i=>included(i,'open'));
-  const outstandInv = lastInvoices.filter(i=>included(i,'outstanding'));
-  const quoteRecs   = lastQuotes.filter(q=>included(q,'quotes'));
+function thirtyDaysAgo(){
+  const d=new Date(); d.setDate(d.getDate()-30); return d;
+}
+
+function isThisYear(dateStr){
+  if(!dateStr) return false;
+  return new Date(dateStr).getFullYear()===new Date().getFullYear();
+}
+
+function isLastYear(dateStr){
+  if(!dateStr) return false;
+  return new Date(dateStr).getFullYear()===new Date().getFullYear()-1;
+}
+
+function isThisWeek(dateStr){
+  if(!dateStr) return false;
+  const d=new Date(dateStr), ws=new Date(); ws.setDate(ws.getDate()-ws.getDay()); ws.setHours(0,0,0,0);
+  return d>=ws;
+}
+
+// Art decline count
+function countArtDeclines(){
+  const declineStatus=statuses.find(s=>s.name&&s.name.toLowerCase().includes("art declined"));
+  if(!declineStatus) return {ytd:0,total:0};
+  const ytd=invoices.filter(i=>isThisYear(i.createdAt)&&i.status&&i.status.id===declineStatus.id).length;
+  const total=invoices.filter(i=>i.status&&i.status.id===declineStatus.id).length;
+  return {ytd,total,statusName:declineStatus.name};
+}
+
+// ── Render ────────────────────────────────────────────────────────────────
+function render(){
+  const now=new Date(), cm=now.getMonth(), year=now.getFullYear();
+  const ws=new Date(now); ws.setDate(now.getDate()-now.getDay()); ws.setHours(0,0,0,0);
+  const thirtyAgo=thirtyDaysAgo();
+
+  const salesInv    = invoices.filter(i=>included(i,'sales')&&isThisYear(i.createdAt));
+  const openInv     = invoices.filter(i=>included(i,'open'));
+  const outstandInv = invoices.filter(i=>included(i,'outstanding')&&parseFloat(i.amountOutstanding)>0);
+  const quoteRecs   = quotes.filter(q=>included(q,'quotes'));
+  const qWeek       = quoteRecs.filter(q=>isThisWeek(q.createdAt));
 
   const ytdSales    = salesInv.reduce((s,i)=>s+(parseFloat(i.total)||0),0);
   const outstanding = outstandInv.reduce((s,i)=>s+(parseFloat(i.amountOutstanding)||0),0);
-  const qWeek       = quoteRecs.filter(q=>{const d=new Date(q.createdAt);return !isNaN(d.getTime())&&d>=ws;});
-  const conv        = quoteRecs.length>0?Math.min(100,(lastInvoices.length/(lastInvoices.length+quoteRecs.length))*100):0;
+  const conv        = quoteRecs.length>0?Math.min(100,(invoices.length/(invoices.length+quoteRecs.length))*100):0;
 
+  // Monthly this year
   const monthly=Array(12).fill(0);
-  salesInv.forEach(i=>{const d=new Date(i.createdAt);if(!isNaN(d.getTime()))monthly[d.getMonth()]+=(parseFloat(i.total)||0);});
+  salesInv.forEach(i=>{const d=new Date(i.createdAt);monthly[d.getMonth()]+=(parseFloat(i.total)||0);});
 
-  const umap={};
-  salesInv.forEach(i=>{const n=(i.contact&&i.contact.fullName)||"Unassigned";umap[n]=(umap[n]||0)+(parseFloat(i.total)||0);});
-  const byUser=Object.entries(umap).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  // Monthly last year (from all invoices, filter by last year)
+  const prevMonthly=Array(12).fill(0);
+  invoices.filter(i=>included(i,'sales')&&isLastYear(i.createdAt)).forEach(i=>{
+    const d=new Date(i.createdAt); prevMonthly[d.getMonth()]+=(parseFloat(i.total)||0);
+  });
 
-  const cmSales=monthly[cm],cmGoal=MONTHLY_GOALS[cm],cmPct=cmGoal>0?Math.min(100,(cmSales/cmGoal)*100):0;
+  // YTD goal and progress
   const ytdGoal=MONTHLY_GOALS.slice(0,cm+1).reduce((s,g)=>s+g,0);
   const ytdPct=ytdGoal>0?Math.min(100,(ytdSales/ytdGoal)*100):0;
+  const cmSales=monthly[cm], cmGoal=MONTHLY_GOALS[cm], cmPct=cmGoal>0?Math.min(100,(cmSales/cmGoal)*100):0;
 
-  document.getElementById("dash-sub").textContent=`${fmtN(lastInvoices.length)} total invoices · ${fmtN(salesInv.length)} counted toward sales · Updated ${new Date().toLocaleTimeString()}`;
-  document.getElementById("orders-count").textContent=fmtN(lastInvoices.length)+" total";
-  document.getElementById("chart-year").textContent=year;
-  document.getElementById("ytd-year").textContent=year;
-  document.getElementById("cur-month-title").textContent=MONTHS[cm]+" vs Goal";
+  // Art declines
+  const artDeclines=countArtDeclines();
+
+  // By company
+  const companyMap={};
+  salesInv.forEach(i=>{const c=getCompany(i);companyMap[c]=(companyMap[c]||0)+(parseFloat(i.total)||0);});
+  const byCompany=Object.entries(companyMap).sort((a,b)=>b[1]-a[1]).slice(0,10);
+
+  // Recent 30-day
+  const recentOrders=[...invoices].filter(i=>new Date(i.createdAt)>=thirtyAgo).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  const recentQuotes=[...quotes].filter(q=>new Date(q.createdAt)>=thirtyAgo).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+
+  document.getElementById("dash-sub").textContent=`${fmtN(invoices.length)} total invoices · ${fmtN(salesInv.length)} counted toward YTD sales`;
+
+  // ── KPIs ──
+  const ringColor=cmPct>=75?"#3D9A5C":cmPct>=50?"#D97706":"#DC2626";
+  const ytdColor=ytdPct>=75?"#3D9A5C":ytdPct>=50?"#D97706":"#DC2626";
 
   document.getElementById("kpis").innerHTML=`
-    <div class="kpi"><div><div class="kpi-lbl">YTD Sales</div><div class="kpi-val" style="color:#3D9A5C">${fmt(ytdSales)}</div><div class="kpi-s">${year} year to date</div></div><div class="kpi-ico ig">💰</div></div>
-    <div class="kpi"><div><div class="kpi-lbl">Outstanding Invoices</div><div class="kpi-val" style="color:#DC2626">${fmt(outstanding)}</div><div class="kpi-s">Unpaid balance</div></div><div class="kpi-ico ir">📄</div></div>
-    <div class="kpi"><div><div class="kpi-lbl">Open Orders</div><div class="kpi-val">${fmtN(openInv.length)}</div><div class="kpi-s">Active in pipeline</div></div><div class="kpi-ico ia">📦</div></div>
-    <div class="kpi"><div><div class="kpi-lbl">Quotes This Week</div><div class="kpi-val">${fmtN(qWeek.length)}</div><div class="kpi-s">${fmtN(quoteRecs.length)} total on record</div></div><div class="kpi-ico ib">📝</div></div>
-    <div class="kpi"><div><div class="kpi-lbl">Conversion Rate</div><div class="kpi-val">${conv.toFixed(1)}%</div><div class="kpi-s">Quotes to orders</div></div><div class="kpi-ico ig">📈</div></div>
+    <div class="kpi no-click">
+      <div>
+        <div class="kpi-lbl">YTD Sales</div>
+        <div class="kpi-val" style="color:#3D9A5C">${fmt(ytdSales)}</div>
+        <div class="kpi-s">${year} year to date</div>
+      </div>
+      <div class="kpi-ico ig">💰</div>
+    </div>
+    <div class="kpi" onclick="openModal('outstanding')">
+      <div>
+        <div class="kpi-lbl">Outstanding</div>
+        <div class="kpi-val" style="color:#DC2626">${fmt(outstanding)}</div>
+        <div class="kpi-s">${fmtN(outstandInv.length)} unpaid invoices ↗</div>
+      </div>
+      <div class="kpi-ico ir">📄</div>
+    </div>
+    <div class="kpi" onclick="openModal('open')">
+      <div>
+        <div class="kpi-lbl">Open Orders</div>
+        <div class="kpi-val">${fmtN(openInv.length)}</div>
+        <div class="kpi-s">Active in pipeline ↗</div>
+      </div>
+      <div class="kpi-ico ia">📦</div>
+    </div>
+    <div class="kpi" onclick="openModal('quotes-week')">
+      <div>
+        <div class="kpi-lbl">Quotes This Week</div>
+        <div class="kpi-val">${fmtN(qWeek.length)}</div>
+        <div class="kpi-s">${fmtN(quoteRecs.length)} total on record ↗</div>
+      </div>
+      <div class="kpi-ico ib">📝</div>
+    </div>
+    <div class="kpi no-click">
+      <div>
+        <div class="kpi-lbl">Conversion Rate</div>
+        <div class="kpi-val">${conv.toFixed(1)}%</div>
+        <div class="kpi-s">Quotes to orders</div>
+      </div>
+      <div class="kpi-ico ig">📈</div>
+    </div>
+    <div class="kpi no-click">
+      <div>
+        <div class="kpi-lbl">Art Declines YTD</div>
+        <div class="kpi-val" style="color:#D97706">${fmtN(artDeclines.ytd)}</div>
+        <div class="kpi-s">${fmtN(artDeclines.total)} all time</div>
+      </div>
+      <div class="kpi-ico ip">🎨</div>
+    </div>
   `;
 
-  const ringColor=cmPct>=75?"#3D9A5C":cmPct>=50?"#D97706":"#DC2626";
-  const r=54,circ=2*Math.PI*r,dash=circ*(cmPct/100),gap=circ-dash;
-  document.getElementById("ring-wrap").innerHTML=`
-    <svg width="140" height="140" viewBox="0 0 140 140" style="flex-shrink:0">
-      <circle cx="70" cy="70" r="${r}" fill="none" stroke="#F3F4F6" stroke-width="14"/>
-      <circle cx="70" cy="70" r="${r}" fill="none" stroke="${ringColor}" stroke-width="14"
-        stroke-dasharray="${dash.toFixed(1)} ${gap.toFixed(1)}" stroke-linecap="round" transform="rotate(-90 70 70)"/>
-      <text x="70" y="66" text-anchor="middle" font-size="18" font-weight="700" fill="#111827">${Math.round(cmPct)}%</text>
-      <text x="70" y="84" text-anchor="middle" font-size="11" fill="#6B7280">of goal</text>
-    </svg>
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <div><div style="font-size:12px;color:#6B7280;margin-bottom:2px">Actual</div><div style="font-size:28px;font-weight:700;color:${ringColor}">${fmt(cmSales)}</div></div>
-      <div><div style="font-size:12px;color:#6B7280;margin-bottom:2px">Goal</div><div style="font-size:20px;font-weight:600">${fmt(cmGoal)}</div></div>
-      <div style="font-size:12px;color:#6B7280">${fmt(Math.max(0,cmGoal-cmSales))} remaining</div>
-    </div>`;
+  // ── Widgets ──
+  const wg=document.getElementById("widget-grid");
+  wg.innerHTML="";
 
-  const ytdColor=ytdPct>=75?"#3D9A5C":ytdPct>=50?"#D97706":"#DC2626";
-  document.getElementById("ytd-progress").innerHTML=`
-    <div style="display:flex;justify-content:space-between;margin-bottom:12px">
-      <div><div style="font-size:12px;color:#6B7280;margin-bottom:2px">YTD Actual</div><div style="font-size:24px;font-weight:700;color:${ytdColor}">${fmt(ytdSales)}</div></div>
-      <div style="text-align:right"><div style="font-size:12px;color:#6B7280;margin-bottom:2px">YTD Goal</div><div style="font-size:24px;font-weight:700">${fmt(ytdGoal)}</div></div>
+  // Helper to get size class
+  function sizeClass(id,def){return "w"+(widgetSizes[id]||def);}
+
+  // 1. Current month ring + YTD progress
+  addWidget(wg,"cur-month","w4",`${MONTHS[cm]} vs Goal`,`
+    <div class="ring-wrap">
+      ${ringChart(cmPct,ringColor,cmSales,cmGoal)}
     </div>
-    <div style="height:14px;background:#F3F4F6;border-radius:99px;overflow:hidden;margin-bottom:8px">
-      <div style="height:100%;width:${ytdPct.toFixed(1)}%;background:${ytdColor};border-radius:99px;transition:width .8s ease"></div>
+  `);
+
+  addWidget(wg,"ytd-prog","w8","YTD Progress",`
+    <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+      <div><div style="font-size:11px;color:#6B7280;margin-bottom:2px">YTD Actual</div><div style="font-size:22px;font-weight:700;color:${ytdColor}">${fmt(ytdSales)}</div></div>
+      <div style="text-align:right"><div style="font-size:11px;color:#6B7280;margin-bottom:2px">YTD Goal</div><div style="font-size:22px;font-weight:700">${fmt(ytdGoal)}</div></div>
     </div>
+    <div class="ytd-progress-bar"><div class="ytd-progress-fill" style="width:${ytdPct.toFixed(1)}%;background:${ytdColor}"></div></div>
     <div style="display:flex;justify-content:space-between;font-size:12px;color:#6B7280">
       <span>${ytdPct.toFixed(1)}% attained through ${MONTHS[cm]}</span>
       <span>${fmt(Math.max(0,ytdGoal-ytdSales))} remaining</span>
-    </div>`;
+    </div>
+  `);
 
-  document.getElementById("month-grid").innerHTML=MONTHS.slice(0,cm+1).map((m,i)=>{
-    const actual=monthly[i],goal=MONTHLY_GOALS[i],pct=goal>0?Math.min(100,(actual/goal)*100):0;
-    const color=pct>=75?"#3D9A5C":pct>=50?"#D97706":"#DC2626";
-    return`<div class="month-card${i===cm?" current":""}">
-      <div class="month-lbl">${m}${i===cm?" · Now":""}</div>
-      <div class="month-val">${fmt(actual)}</div>
-      <div class="month-track"><div class="month-fill" style="width:${pct.toFixed(1)}%;background:${color}"></div></div>
-      <div style="display:flex;justify-content:space-between;font-size:11px">
-        <span style="font-weight:600;color:${color}">${Math.round(pct)}%</span>
-        <span style="color:#9CA3AF">${fmt(goal)}</span>
+  // 2. Monthly chart — all 12 months with prev year comparison
+  const maxVal=Math.max(...monthly,...prevMonthly,...MONTHLY_GOALS,1);
+  addWidget(wg,"monthly","w12","Sales by Month — All 12 Months",`
+    <div class="month-grid">
+      ${MONTHS.map((m,i)=>{
+        const actual=monthly[i],prev=prevMonthly[i],goal=MONTHLY_GOALS[i];
+        const p=goal>0?Math.min(100,(actual/goal)*100):0;
+        const color=p>=75?"#3D9A5C":p>=50?"#D97706":"#DC2626";
+        const growthVal=prev>0?((actual-prev)/prev*100):null;
+        const isCurrent=i===cm&&actual>0;
+        const isFuture=i>cm;
+        return`<div class="month-card${isCurrent?" current":""}">
+          <div class="month-lbl">${m} ${year}${isFuture?" ·":""}</div>
+          <div class="month-val">${isFuture?"—":fmt(actual)}</div>
+          ${!isFuture?`
+          <div class="month-track"><div class="month-fill" style="width:${p.toFixed(1)}%;background:${color}"></div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span class="month-pct" style="color:${color}">${Math.round(p)}%</span>
+            <span style="font-size:10px;color:#9CA3AF">${fmt(goal)}</span>
+          </div>
+          <div class="month-prev" style="margin-top:2px;color:#9CA3AF">${prev>0?fmt(prev)+" prev":""}</div>
+          ${growthVal!==null?`<div class="month-growth" style="color:${growthVal>=0?"#3D9A5C":"#DC2626"}">${growthVal>=0?"▲":"▼"} ${Math.abs(growthVal).toFixed(1)}% YoY</div>`:""}
+          `:"<div style='color:#E5E7EB;font-size:11px'>Upcoming</div>"}
+        </div>`;
+      }).join("")}
+    </div>
+    <div style="display:flex;gap:16px;margin-top:12px;font-size:12px;color:#6B7280">
+      <span>█ <span style="color:#3D9A5C">On track</span></span>
+      <span>█ <span style="color:#D97706">Below 75%</span></span>
+      <span>█ <span style="color:#DC2626">Below 50%</span></span>
+      <span style="margin-left:8px">▲▼ = Year-over-year growth vs same month last year</span>
+    </div>
+  `);
+
+  // 3. YTD Sales by Company
+  addWidget(wg,"by-company","w6","YTD Sales by Company",`
+    <table><thead><tr><th>Company</th><th style="text-align:right">Sales</th><th style="text-align:right">Share</th></tr></thead>
+    <tbody>${byCompany.length?byCompany.map(([n,a])=>`<tr>
+      <td>${n}</td>
+      <td style="text-align:right;font-weight:600;color:#3D9A5C">${fmt(a)}</td>
+      <td style="text-align:right;color:#9CA3AF">${ytdSales>0?(a/ytdSales*100).toFixed(1)+"%":"—"}</td>
+    </tr>`).join(""):`<tr><td colspan="3" class="empty">No data — check status settings</td></tr>`}
+    </tbody></table>
+  `);
+
+  // 4. Art decline tracker
+  addWidget(wg,"art-declines","w6","Art Decline Tracker",`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+      <div style="background:#FEF3C7;border-radius:8px;padding:16px;text-align:center">
+        <div style="font-size:11px;color:#D97706;font-weight:600;margin-bottom:4px">YTD DECLINES</div>
+        <div style="font-size:32px;font-weight:700;color:#D97706">${artDeclines.ytd}</div>
       </div>
-    </div>`;
-  }).join("");
+      <div style="background:#F3F4F6;border-radius:8px;padding:16px;text-align:center">
+        <div style="font-size:11px;color:#6B7280;font-weight:600;margin-bottom:4px">ALL TIME</div>
+        <div style="font-size:32px;font-weight:700;color:#374151">${artDeclines.total}</div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:#6B7280">Tracking status: <strong>${artDeclines.statusName||"Art Declined (not found)"}</strong></div>
+    <div style="font-size:12px;color:#6B7280;margin-top:4px">Each decline represents an order that required art revision before approval.</div>
+  `);
 
-  document.getElementById("user-table").innerHTML=byUser.length
-    ?byUser.map(([n,a])=>`<tr><td>${n}</td><td style="text-align:right;font-weight:600;color:#3D9A5C">${fmt(a)}</td></tr>`).join("")
-    :`<tr><td colspan="2" style="color:#9CA3AF;text-align:center;padding:20px">No sales data — check status settings</td></tr>`;
+  // 5. Recent Orders (last 30 days) — sortable
+  addWidget(wg,"recent-orders","w12","Recent Orders — Last 30 Days",
+    renderSortableTable("recent-orders-tbl", recentOrders, [
+      {key:"visualId",label:"#",render:r=>`<span style="color:#9CA3AF">${r.visualId}</span>`},
+      {key:"company",label:"Company",render:r=>getCompany(r)},
+      {key:"createdAt",label:"Date",render:r=>new Date(r.createdAt).toLocaleDateString()},
+      {key:"total",label:"Total",align:"right",render:r=>`<strong>${fmt(r.total)}</strong>`},
+      {key:"amountOutstanding",label:"Outstanding",align:"right",render:r=>`<span style="color:${parseFloat(r.amountOutstanding)>0?"#DC2626":"#3D9A5C"}">${fmt(r.amountOutstanding)}</span>`},
+      {key:"status",label:"Status",render:r=>`<span class="pill">${r.status&&r.status.name||"—"}</span>`},
+    ], r=>({company:getCompany(r),total:parseFloat(r.total)||0,amountOutstanding:parseFloat(r.amountOutstanding)||0,status:r.status&&r.status.name||"",createdAt:r.createdAt,visualId:r.visualId}))
+  );
 
-  const recentQ=[...lastQuotes].reverse().slice(0,10);
-  document.getElementById("quotes-table").innerHTML=recentQ.length
-    ?recentQ.map(q=>`<tr>
-        <td style="color:#6B7280">${q.visualId||""}</td>
-        <td>${(q.contact&&q.contact.fullName)||"—"}</td>
-        <td style="text-align:right">${fmt(q.total)}</td>
-        <td><span class="pill">${(q.status&&q.status.name)||"—"}</span></td>
-      </tr>`).join("")
-    :`<tr><td colspan="4" style="color:#9CA3AF;text-align:center;padding:20px">No quotes</td></tr>`;
-
-  const recentO=[...lastInvoices].reverse().slice(0,20);
-  document.getElementById("orders-table").innerHTML=recentO.map(o=>`<tr>
-    <td style="color:#6B7280">${o.visualId||""}</td>
-    <td>${(o.contact&&o.contact.fullName)||"—"}</td>
-    <td style="color:#6B7280;white-space:nowrap">${o.createdAt?new Date(o.createdAt).toLocaleDateString():"—"}</td>
-    <td style="text-align:right;font-weight:600">${fmt(o.total)}</td>
-    <td style="text-align:right;color:${parseFloat(o.amountOutstanding)>0?"#DC2626":"#3D9A5C"}">${fmt(o.amountOutstanding)}</td>
-    <td><span class="pill">${(o.status&&o.status.name)||"—"}</span></td>
-  </tr>`).join("");
+  // 6. Recent Quotes (last 30 days) — sortable
+  addWidget(wg,"recent-quotes","w12","Recent Quotes — Last 30 Days",
+    renderSortableTable("recent-quotes-tbl", recentQuotes, [
+      {key:"visualId",label:"#",render:r=>`<span style="color:#9CA3AF">${r.visualId}</span>`},
+      {key:"company",label:"Company",render:r=>getCompany(r)},
+      {key:"createdAt",label:"Date",render:r=>new Date(r.createdAt).toLocaleDateString()},
+      {key:"total",label:"Total",align:"right",render:r=>`<strong>${fmt(r.total)}</strong>`},
+      {key:"status",label:"Status",render:r=>`<span class="pill">${r.status&&r.status.name||"—"}</span>`},
+    ], r=>({company:getCompany(r),total:parseFloat(r.total)||0,status:r.status&&r.status.name||"",createdAt:r.createdAt,visualId:r.visualId}))
+  );
 }
 
-function renderSettings() {
+// ── Widget builder ────────────────────────────────────────────────────────
+function addWidget(grid, id, defaultSize, title, content){
+  const size=sizeClass(id,defaultSize.replace("w",""));
+  const el=document.createElement("div");
+  el.className=`widget ${size}`;
+  el.id=`widget-${id}`;
+  el.innerHTML=`
+    <div class="widget-hd">
+      <h3>${title}</h3>
+      <div class="widget-hd-right">
+        <button class="resize-btn" onclick="resizeWidget('${id}')" title="Resize">⊞</button>
+      </div>
+    </div>
+    <div class="widget-bd">${content}</div>
+  `;
+  grid.appendChild(el);
+}
+
+function sizeClass(id,def){return "w"+(widgetSizes[id]||def);}
+
+function resizeWidget(id){
+  const sizes=[3,4,6,8,12];
+  const el=document.getElementById("widget-"+id);
+  if(!el) return;
+  const cur=parseInt(widgetSizes[id]||4);
+  const next=sizes[(sizes.indexOf(cur)+1)%sizes.length];
+  widgetSizes[id]=next;
+  localStorage.setItem(LAYOUT_KEY,JSON.stringify(widgetSizes));
+  el.className=`widget w${next}`;
+}
+
+// ── Sortable table ────────────────────────────────────────────────────────
+function renderSortableTable(id, data, cols, getValue){
+  const state=sortState[id]||{col:null,dir:1};
+  let rows=[...data];
+  if(state.col){
+    rows.sort((a,b)=>{
+      const av=getValue(a)[state.col], bv=getValue(b)[state.col];
+      if(typeof av==="number") return (av-bv)*state.dir;
+      return String(av).localeCompare(String(bv))*state.dir;
+    });
+  }
+  const headers=cols.map(c=>`<th class="${state.col===c.key?"sorted":""}" onclick="sortTable('${id}','${c.key}')" style="text-align:${c.align||"left"}">${c.label}<span class="sort-icon">${state.col===c.key?(state.dir===1?"↑":"↓"):"↕"}</span></th>`).join("");
+  const body=rows.length?rows.map(r=>`<tr>${cols.map(c=>`<td style="text-align:${c.align||"left"}">${c.render(r)}</td>`).join("")}</tr>`).join(""):`<tr><td colspan="${cols.length}" class="empty">No records in the last 30 days</td></tr>`;
+  return`<div style="overflow-x:auto"><table id="${id}"><thead><tr>${headers}</tr></thead><tbody>${body}</tbody></table></div>`;
+}
+
+function sortTable(id, col){
+  const state=sortState[id]||{col:null,dir:1};
+  sortState[id]={col,dir:state.col===col?-state.dir:1};
+  render();
+}
+
+// ── Ring chart SVG ────────────────────────────────────────────────────────
+function ringChart(pctVal, color, actual, goal){
+  const r=48, circ=2*Math.PI*r, dash=circ*(pctVal/100), gap=circ-dash;
+  return`<svg width="120" height="120" viewBox="0 0 120 120" style="flex-shrink:0">
+    <circle cx="60" cy="60" r="${r}" fill="none" stroke="#F3F4F6" stroke-width="12"/>
+    <circle cx="60" cy="60" r="${r}" fill="none" stroke="${color}" stroke-width="12"
+      stroke-dasharray="${dash.toFixed(1)} ${gap.toFixed(1)}" stroke-linecap="round" transform="rotate(-90 60 60)"/>
+    <text x="60" y="56" text-anchor="middle" font-size="16" font-weight="700" fill="#111827">${Math.round(pctVal)}%</text>
+    <text x="60" y="72" text-anchor="middle" font-size="10" fill="#6B7280">of goal</text>
+  </svg>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div><div style="font-size:11px;color:#6B7280;margin-bottom:1px">Actual</div><div style="font-size:22px;font-weight:700;color:${color}">${fmt(actual)}</div></div>
+    <div><div style="font-size:11px;color:#6B7280;margin-bottom:1px">Goal</div><div style="font-size:16px;font-weight:600">${fmt(goal)}</div></div>
+    <div style="font-size:12px;color:#6B7280">${fmt(Math.max(0,goal-actual))} left</div>
+  </div>`;
+}
+
+// ── Modal drill-downs ─────────────────────────────────────────────────────
+function openModal(type){
+  document.getElementById("modal-overlay").classList.add("open");
+  const title=document.getElementById("modal-title");
+  const filters=document.getElementById("modal-filters");
+  const content=document.getElementById("modal-content");
+  filters.innerHTML="";
+
+  if(type==="outstanding"){
+    title.textContent="Outstanding Invoices";
+    const data=invoices.filter(i=>included(i,'outstanding')&&parseFloat(i.amountOutstanding)>0)
+      .sort((a,b)=>parseFloat(b.amountOutstanding)-parseFloat(a.amountOutstanding));
+    const total=data.reduce((s,i)=>s+(parseFloat(i.amountOutstanding)||0),0);
+    filters.innerHTML=`<span class="modal-stat">Total outstanding: <strong style="color:#DC2626">${fmt(total)}</strong> across <strong>${data.length}</strong> invoices</span>`;
+    content.innerHTML=`<table><thead><tr><th>#</th><th>Company</th><th>Created</th><th style="text-align:right">Invoice Total</th><th style="text-align:right">Outstanding</th><th>Status</th></tr></thead>
+    <tbody>${data.map(o=>`<tr>
+      <td style="color:#9CA3AF">${o.visualId}</td>
+      <td>${getCompany(o)}</td>
+      <td style="color:#9CA3AF">${new Date(o.createdAt).toLocaleDateString()}</td>
+      <td style="text-align:right">${fmt(o.total)}</td>
+      <td style="text-align:right;font-weight:600;color:#DC2626">${fmt(o.amountOutstanding)}</td>
+      <td><span class="pill">${o.status&&o.status.name||"—"}</span></td>
+    </tr>`).join("")}</tbody></table>`;
+  }
+
+  else if(type==="open"){
+    title.textContent="Open Orders";
+    const statusFilter=document.createElement("select");
+    statusFilter.innerHTML=`<option value="">All Statuses</option>${[...new Set(invoices.filter(i=>included(i,'open')).map(i=>i.status&&i.status.name).filter(Boolean))].sort().map(s=>`<option>${s}</option>`).join("")}`;
+    statusFilter.onchange=()=>renderOpenOrders(statusFilter.value);
+    filters.appendChild(statusFilter);
+    renderOpenOrders("");
+    function renderOpenOrders(filterStatus){
+      let data=invoices.filter(i=>included(i,'open'));
+      if(filterStatus) data=data.filter(i=>i.status&&i.status.name===filterStatus);
+      data.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+      content.innerHTML=`<table><thead><tr><th>#</th><th>Company</th><th>Created</th><th style="text-align:right">Total</th><th>Status</th></tr></thead>
+      <tbody>${data.map(o=>`<tr>
+        <td style="color:#9CA3AF">${o.visualId}</td>
+        <td>${getCompany(o)}</td>
+        <td style="color:#9CA3AF">${new Date(o.createdAt).toLocaleDateString()}</td>
+        <td style="text-align:right;font-weight:600">${fmt(o.total)}</td>
+        <td><span class="pill">${o.status&&o.status.name||"—"}</span></td>
+      </tr>`).join("")}</tbody></table>`;
+    }
+  }
+
+  else if(type==="quotes-week"){
+    title.textContent="Quotes This Week";
+    const ws=new Date(); ws.setDate(ws.getDate()-ws.getDay()); ws.setHours(0,0,0,0);
+    const data=quotes.filter(q=>included(q,'quotes')&&new Date(q.createdAt)>=ws)
+      .sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+    const total=data.reduce((s,q)=>s+(parseFloat(q.total)||0),0);
+    filters.innerHTML=`<span class="modal-stat">${data.length} quotes this week · Total value: <strong style="color:#3D9A5C">${fmt(total)}</strong></span>`;
+    content.innerHTML=`<table><thead><tr><th>#</th><th>Company</th><th>Date</th><th style="text-align:right">Total</th><th>Status</th></tr></thead>
+    <tbody>${data.map(q=>`<tr>
+      <td style="color:#9CA3AF">${q.visualId}</td>
+      <td>${getCompany(q)}</td>
+      <td style="color:#9CA3AF">${new Date(q.createdAt).toLocaleDateString()}</td>
+      <td style="text-align:right;font-weight:600">${fmt(q.total)}</td>
+      <td><span class="pill">${q.status&&q.status.name||"—"}</span></td>
+    </tr>`).join("")}</tbody></table>`;
+  }
+}
+
+function closeModal(e){
+  if(!e||e.target===document.getElementById("modal-overlay")){
+    document.getElementById("modal-overlay").classList.remove("open");
+  }
+}
+
+// ── Settings ──────────────────────────────────────────────────────────────
+function renderSettings(){
   const sections=[
-    {key:'sales',       title:'YTD Sales & Monthly Chart', desc:'Which statuses count toward revenue figures and the monthly chart'},
-    {key:'open',        title:'Open Orders',               desc:'Which statuses count as active open orders'},
-    {key:'quotes',      title:'Active Quotes',             desc:'Which statuses appear in the quotes table and weekly count'},
-    {key:'outstanding', title:'Outstanding Balance',       desc:'Which statuses are included in the unpaid balance total'},
+    {key:"sales",title:"YTD Sales & Monthly Chart",desc:"Statuses that count toward revenue figures"},
+    {key:"open",title:"Open Orders",desc:"Statuses shown as active open orders"},
+    {key:"quotes",title:"Active Quotes",desc:"Statuses shown in quotes tables and counts"},
+    {key:"outstanding",title:"Outstanding Balance",desc:"Statuses included in unpaid balance total"},
   ];
   document.getElementById("settings-grid").innerHTML=sections.map(sec=>`
     <div class="settings-card">
       <div class="settings-card-hd"><h3>${sec.title}</h3><p>${sec.desc}</p></div>
-      <div class="status-list" id="list-${sec.key}">
-        ${allStatuses.map(s=>`
-          <div class="status-item">
-            <input type="checkbox" id="${sec.key}-${s.id}" ${settings[sec.key].includes(s.id)?"checked":""}
-              onchange="toggle('${sec.key}','${s.id}',this.checked)"/>
-            <label for="${sec.key}-${s.id}" title="${s.name}">${s.name}</label>
-          </div>`).join("")}
+      <div class="status-list">
+        ${statuses.map(s=>`<div class="status-item">
+          <input type="checkbox" id="${sec.key}-${s.id}" ${settings[sec.key]&&settings[sec.key].includes(s.id)?"checked":""}
+            onchange="toggle('${sec.key}','${s.id}',this.checked)"/>
+          <label for="${sec.key}-${s.id}">${s.name}</label>
+        </div>`).join("")}
       </div>
       <div class="settings-actions">
-        <button class="btn btn-gray" onclick="selectAll('${sec.key}',true)">All</button>
-        <button class="btn btn-gray" onclick="selectAll('${sec.key}',false)">None</button>
+        <button class="btn btn-gray btn-sm" onclick="selectAll('${sec.key}',true)">All</button>
+        <button class="btn btn-gray btn-sm" onclick="selectAll('${sec.key}',false)">None</button>
         <span class="save-toast" id="toast-${sec.key}">Saved ✓</span>
       </div>
     </div>`).join("");
 }
 
-function toggle(section, id, checked) {
+function toggle(section,id,checked){
   if(checked){if(!settings[section].includes(id))settings[section].push(id);}
   else{settings[section]=settings[section].filter(x=>x!==id);}
   localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));
   render();
   const t=document.getElementById("toast-"+section);
-  t.style.opacity="1"; setTimeout(()=>t.style.opacity="0",1500);
+  if(t){t.style.opacity="1";setTimeout(()=>t.style.opacity="0",1500);}
 }
 
-function selectAll(section, val) {
-  settings[section]=val?allStatuses.map(s=>s.id):[];
+function selectAll(section,val){
+  settings[section]=val?statuses.map(s=>s.id):[];
   localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));
   renderSettings(); render();
 }
