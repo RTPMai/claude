@@ -17,17 +17,13 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: "No data yet — visit /api/sync to populate" });
     }
 
-    // Upstash may return a string or already-parsed object
+    // Parse once — if still a string or numeric-keyed object, parse again
     let data = json.result;
-    if(typeof data === "string") {
-      try { data = JSON.parse(data); } catch(e) {
-        // If it's still a string after parse attempt, it may be double-encoded
-        data = JSON.parse(JSON.parse(data));
-      }
-    }
-
-    if(!data.invoices) {
-      return res.status(500).json({ error: "Data malformed — re-run /api/sync", raw: typeof json.result, keys: Object.keys(data).slice(0,5) });
+    if(typeof data === "string") data = JSON.parse(data);
+    if(!data.invoices && typeof data === "object") {
+      // Double-encoded — convert numeric-keyed object back to string then parse
+      const str = Object.values(data).join("");
+      data = JSON.parse(str);
     }
 
     res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=300");
