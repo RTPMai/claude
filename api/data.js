@@ -12,20 +12,28 @@ export default async function handler(req, res) {
       headers: { Authorization: `Bearer ${token}` }
     });
     const json = await r.json();
+    if(!json.result) return res.status(404).json({ error: "No data yet — run /api/sync first" });
 
-    if(!json.result) {
-      return res.status(404).json({ error: "No data yet — visit /api/sync to populate" });
-    }
-
-    // Parse once — if still a string or numeric-keyed object, parse again
+    // Upstash returns the value as-is. Our sync stored a JSON string,
+    // so result is a string. Parse until we have an object with invoices.
     let data = json.result;
-    if(typeof data === "string") data = JSON.parse(data);
-    if(!data.invoices && typeof data === "object") {
-      // Double-encoded — convert numeric-keyed object back to string then parse
-      const str = Object.values(data).join("");
-      data = JSON.parse(str);
+    let attempts = 0;
+    while(typeof data === "string" && attempts < 3) {
+      data = JSON.parse(data);
+      attempts++;
     }
 
+    // If it's still not right, it may be a numeric-keyed object (string split across keys)
+    if(typeof data === "object" && !data.invoices && data[0] !== undefined) {
+      const rebuilt = Object.keys(data).sort((a,b)=>Number(a)-Number(b)).map(k=>data[k]).join("");
+      data = JSON.parse(rebuilt);
+    }
+
+    if(!data.invoices) {
+      return res.status(500).json({ error: "Could not parse stored data", type: typeof data });
+    }
+
+    res.setHeader("Content-Type", "application/json");
     res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=300");
     return res.status(200).json(data);
   } catch(e) {
