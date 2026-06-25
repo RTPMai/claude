@@ -32,7 +32,7 @@ export default async function handler(req, res) {
       if(!data[type]) throw new Error(`No ${type} field in response`);
       nodes.push(...data[type].nodes);
       cursor = data[type].pageInfo.hasNextPage ? data[type].pageInfo.endCursor : null;
-      if(cursor) await new Promise(r => setTimeout(r, 700));
+      if(cursor) await new Promise(r => setTimeout(r, 1200));
     } while(cursor);
     return nodes;
   }
@@ -55,7 +55,9 @@ export default async function handler(req, res) {
     const yearFilter = `,inProductionAfter:"${year}-01-01T00:00:00Z"`;
 
     const statuses = await fetchAllStatuses();
+    await new Promise(r => setTimeout(r, 2000));
     const invoices = await fetchAll("invoices", yearFilter);
+    await new Promise(r => setTimeout(r, 2000));
     const quotes   = await fetchAll("quotes", "");
 
     const payload = JSON.stringify({ invoices, quotes, statuses, syncedAt: new Date().toISOString() });
