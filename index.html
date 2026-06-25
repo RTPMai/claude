@@ -361,12 +361,25 @@ function render(){
   const salesInv    = invoices.filter(i=>included(i,'sales')&&isThisYear(i.createdAt));
   const openInv     = invoices.filter(i=>included(i,'open'));
   const outstandInv = invoices.filter(i=>included(i,'outstanding')&&parseFloat(i.amountOutstanding)>0);
+  // Debug: log outstanding total
+  console.log('Outstanding invoices:', outstandInv.length, 'Total:', outstandInv.reduce((s,i)=>s+(parseFloat(i.amountOutstanding)||0),0));
   const quoteRecs   = quotes.filter(q=>included(q,'quotes'));
   const qWeek       = quoteRecs.filter(q=>isThisWeek(q.createdAt));
 
   const ytdSales    = salesInv.reduce((s,i)=>s+(parseFloat(i.total)||0),0);
   const outstanding = outstandInv.reduce((s,i)=>s+(parseFloat(i.amountOutstanding)||0),0);
-  const conv        = quoteRecs.length>0?Math.min(100,(invoices.length/(invoices.length+quoteRecs.length))*100):0;
+  // Conversion = quotes with deposit paid, on terms, or merch store approved
+  // "Awaiting deposit" does NOT count — only fully committed quotes
+  const convertedStatuses = statuses
+    .filter(s => {
+      const n = s.name.toLowerCase();
+      return (n.includes("deposit paid") || n.includes("or terms") || 
+              (n.includes("store") && n.includes("approved")));
+    })
+    .map(s => s.id);
+  const convertedQuotes = quotes.filter(q => q.status && convertedStatuses.includes(q.status.id));
+  const totalQuotesEver = quotes.length;
+  const conv = totalQuotesEver > 0 ? Math.min(100, (convertedQuotes.length / totalQuotesEver) * 100) : 0;
 
   // Monthly this year
   const monthly=Array(12).fill(0);
