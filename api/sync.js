@@ -33,9 +33,15 @@ export default async function handler(req, res) {
     const j = await r.json();
     if(!j.result) return null;
     let val = j.result;
-    if(typeof val === "string") val = JSON.parse(val);
-    if(!val.invoices && val[0] !== undefined) {
-      val = JSON.parse(Object.keys(val).sort((a,b)=>Number(a)-Number(b)).map(k=>val[k]).join(""));
+    // Parse up to 3 levels deep if still a string
+    for(let i=0;i<3;i++){
+      if(typeof val === "string") { try { val = JSON.parse(val); } catch(e){ break; } }
+      else break;
+    }
+    // Handle numeric-keyed object (string chunked across keys by Upstash)
+    if(typeof val === "object" && val !== null && !Array.isArray(val) && val["0"] !== undefined) {
+      const str = Object.keys(val).sort((a,b)=>Number(a)-Number(b)).map(k=>val[k]).join("");
+      val = JSON.parse(str);
     }
     return val;
   }
