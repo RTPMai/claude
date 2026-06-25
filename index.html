@@ -181,40 +181,6 @@ function setProgress(pct, label) {
   const lbl=document.getElementById("progress-label"); if(lbl) lbl.textContent=label;
 }
 
-async function gql(query) {
-  const res = await fetch("/api/printavo",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({query})});
-  if(!res.ok) throw new Error("Proxy error: "+res.status);
-  const json = await res.json();
-  if(json.errors) throw new Error(json.errors.map(e=>e.message).join(", "));
-  return json.data;
-}
-
-async function fetchAllStatuses() {
-  const nodes = []; let cursor = null;
-  do {
-    const after = cursor ? `after:"${cursor}",` : "";
-    const data = await gql(`query{statuses(${after}first:25){nodes{id name}pageInfo{hasNextPage endCursor}}}`);
-    nodes.push(...data.statuses.nodes);
-    cursor = data.statuses.pageInfo.hasNextPage ? data.statuses.pageInfo.endCursor : null;
-    if(cursor) await new Promise(r=>setTimeout(r,300));
-  } while(cursor);
-  return nodes;
-}
-
-async function fetchAllRecords(type, onProgress) {
-  const nodes=[]; let cursor=null, page=0;
-  do {
-    page++; if(onProgress) onProgress(page, nodes.length);
-    const after = cursor ? `,after:"${cursor}"` : "";
-    const yearFilter = type==="invoices" ? `,inProductionAfter:"${new Date().getFullYear()}-01-01T00:00:00Z"` : "";
-    const data = await gql(`query{${type}(first:25,sortOn:VISUAL_ID${yearFilter}${after}){nodes{id visualId createdAt total amountOutstanding status{id name}contact{fullName}}pageInfo{hasNextPage endCursor}}}`);
-    nodes.push(...data[type].nodes);
-    cursor = data[type].pageInfo.hasNextPage ? data[type].pageInfo.endCursor : null;
-    if(cursor) await new Promise(r=>setTimeout(r,700));
-  } while(cursor);
-  return nodes;
-}
-
 async function startLoad(forceRefresh) {
   if(isLoading) return;
   isLoading=true;
@@ -230,7 +196,10 @@ async function startLoad(forceRefresh) {
         hideLoading(); render();
         document.getElementById("last-updated").textContent="Cached · "+new Date(cached.timestamp).toLocaleTimeString();
         isLoading=false; document.getElementById("refresh-btn").disabled=false;
-        setTimeout(()=>startLoad(true),REFRESH_MS);
+        // Check if cache is older than 35 minutes, if so refresh from /api/data
+        const age = Date.now() - (cached.timestamp||0);
+        if(age > 35*60*1000) startLoad(true);
+        else setTimeout(()=>startLoad(true), REFRESH_MS - age);
         return;
       }
     } catch(e){}
@@ -242,19 +211,21 @@ async function startLoad(forceRefresh) {
   setProgress(5,"Starting...");
 
   try {
-    setProgress(8,"Fetching statuses...");
-    allStatuses = await fetchAllStatuses();
-
-    setProgress(15,"Fetching invoices...");
-    const invoices = await fetchAllRecords("invoices",(p,c)=>setProgress(15+p*2,`Fetching invoices: ${c} records (page ${p})...`));
-
-    setProgress(65,"Fetching quotes...");
-    const quotes = await fetchAllRecords("quotes",(p,c)=>setProgress(65+p*2,`Fetching quotes: ${c} records (page ${p})...`));
-
-    lastInvoices=invoices; lastQuotes=quotes;
+    setProgress(50,"Loading data...");
+    const res = await fetch("/api/data");
+    if(!res.ok) {
+      const err = await res.json().catch(()=>({}));
+      throw new Error(err.error || "Failed to load data (status "+res.status+")");
+    }
+    const payload = await res.json();
+    lastInvoices = payload.invoices || [];
+    lastQuotes   = payload.quotes   || [];
+    allStatuses  = payload.statuses || [];
     initSettings();
-    localStorage.setItem(CACHE_KEY,JSON.stringify({invoices,quotes,statuses:allStatuses,timestamp:Date.now()}));
-    document.getElementById("last-updated").textContent="Updated "+new Date().toLocaleTimeString();
+    localStorage.setItem(CACHE_KEY,JSON.stringify({invoices:lastInvoices,quotes:lastQuotes,statuses:allStatuses,timestamp:Date.now()}));
+    const syncedAt = payload.syncedAt ? new Date(payload.syncedAt).toLocaleTimeString() : "unknown";
+    document.getElementById("last-updated").textContent="Synced at "+syncedAt;
+    setProgress(100,"Done!");
     hideLoading(); render();
     setTimeout(()=>startLoad(true),REFRESH_MS);
   } catch(e) {
