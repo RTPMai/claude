@@ -247,7 +247,7 @@ async function startLoad(force) {
     try {
       const cached=JSON.parse(localStorage.getItem(CACHE_KEY)||"null");
       if(cached&&cached.invoices) {
-        invoices=cached.invoices; quotes=cached.quotes; statuses=cached.statuses||[];
+        invoices=cached.invoices||[]; invoicesYtd=cached.invoicesYtd||cached.invoices||[]; quotes=cached.quotes||[]; statuses=cached.statuses||[];
         initSettings();
         hideLoading(); render();
         document.getElementById("last-updated").textContent="Cached · "+new Date(cached.timestamp).toLocaleTimeString();
