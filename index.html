@@ -214,7 +214,7 @@ const LAYOUT_KEY = "printavo_layout_v1";
 const REFRESH_MS = 35 * 60 * 1000;
 const MONTHLY_GOALS = [260000,260000,260000,260000,260000,260000,260000,260000,260000,260000,260000,260000];
 
-let invoices=[], quotes=[], statuses=[], prevYearInvoices=[];
+let invoices=[], invoicesYtd=[], quotes=[], statuses=[];
 let settings = JSON.parse(localStorage.getItem(SETTINGS_KEY)||"null") || {sales:[],open:[],quotes:[],outstanding:[]};
 let widgetSizes = JSON.parse(localStorage.getItem(LAYOUT_KEY)||"null") || {};
 let isLoading = false;
@@ -270,9 +270,9 @@ async function startLoad(force) {
     const payload = await res.json();
     if(!payload.invoices) throw new Error(payload.error||"No invoice data returned");
 
-    invoices=payload.invoices; quotes=payload.quotes; statuses=payload.statuses||[];
+    invoices=payload.invoices||[]; invoicesYtd=payload.invoicesYtd||payload.invoices||[]; quotes=payload.quotes||[]; statuses=payload.statuses||[];
     initSettings();
-    localStorage.setItem(CACHE_KEY,JSON.stringify({invoices,quotes,statuses,timestamp:Date.now()}));
+    localStorage.setItem(CACHE_KEY,JSON.stringify({invoices,invoicesYtd,quotes,statuses,timestamp:Date.now()}));
     const syncedAt=payload.syncedAt?new Date(payload.syncedAt).toLocaleTimeString():"unknown";
     document.getElementById("last-updated").textContent="Synced at "+syncedAt;
     setProgress(100,"Done!");
@@ -358,7 +358,7 @@ function render(){
   const ws=new Date(now); ws.setDate(now.getDate()-now.getDay()); ws.setHours(0,0,0,0);
   const thirtyAgo=thirtyDaysAgo();
 
-  const salesInv    = invoices.filter(i=>included(i,'sales')&&isThisYear(i.createdAt));
+  const salesInv    = invoicesYtd.filter(i=>included(i,'sales'));
   const openInv     = invoices.filter(i=>included(i,'open'));
   const outstandInv = invoices.filter(i=>included(i,'outstanding')&&parseFloat(i.amountOutstanding)>0);
   // Debug: log outstanding total
@@ -408,7 +408,7 @@ function render(){
   const recentOrders=[...invoices].filter(i=>new Date(i.createdAt)>=thirtyAgo).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
   const recentQuotes=[...quotes].filter(q=>new Date(q.createdAt)>=thirtyAgo).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
 
-  document.getElementById("dash-sub").textContent=`${fmtN(invoices.length)} total invoices · ${fmtN(salesInv.length)} counted toward YTD sales`;
+  document.getElementById("dash-sub").textContent=`${fmtN(invoices.length)} total invoices · ${fmtN(invoicesYtd.length)} this year · ${fmtN(salesInv.length)} counted toward YTD sales`;
 
   // ── KPIs ──
   const ringColor=cmPct>=75?"#3D9A5C":cmPct>=50?"#D97706":"#DC2626";
